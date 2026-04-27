@@ -1,0 +1,27 @@
+{
+  "name": "@em/a2a-core",
+  "version": "0.1.0",
+  "description": "EM-A2A shared core: types, chain abstraction, x402 protocol, 8004 identity",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./types": "./dist/types/index.js",
+    "./chain": "./dist/chain/index.js",
+    "./revenue": "./dist/revenue/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

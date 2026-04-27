@@ -1,0 +1,21 @@
+{
+  "name": "@em/a2a-contracts-sol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EM-A2A Solidity smart contracts",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "clean": "rm -rf artifacts cache typechain-types",
+    "node": "hardhat node",
+    "deploy:shasta": "hardhat run script/deploy.ts --network shasta",
+    "deploy:mainnet": "hardhat run script/deploy.mainnet.ts --network tron",
+    "verify:shasta": "hardhat run script/verify.ts --network shasta",
+    "verify:mainnet": "hardhat run script/verify.ts --network tron"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.22.0"
+  }
+}

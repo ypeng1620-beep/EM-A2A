@@ -1,0 +1,21 @@
+{
+  "name": "@em/a2a-insure",
+  "version": "0.1.0",
+  "description": "A2A Insure — Agent behavior insurance + service fulfillment bond",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@em/a2a-core": "workspace:*",
+    "@em/a2a-credit": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

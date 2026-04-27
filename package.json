@@ -1,0 +1,46 @@
+{
+  "name": "em-a2a",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EM-A2A: AI Agent Economy — Alipay-on-chain for Agent-to-Agent commerce",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write . --ignore-path .gitignore",
+    "format:check": "prettier --check . --ignore-path .gitignore",
+    "typecheck": "tsc -b",
+    "clean": "pnpm -r run clean",
+    "contracts:compile": "cd contracts && pnpm run compile",
+    "contracts:test": "cd contracts && pnpm run test",
+    "contracts:deploy:shasta": "cd contracts && pnpm run deploy:shasta",
+    "contracts:deploy:mainnet": "cd contracts && pnpm run deploy:mainnet",
+    "contracts:verify:shasta": "cd contracts && pnpm run verify:shasta",
+    "contracts:verify:mainnet": "cd contracts && pnpm run verify:mainnet",
+    "demo": "tsx scripts/demo.ts",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.21.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,sol}": [
+      "prettier --write"
+    ]
+  }
+}

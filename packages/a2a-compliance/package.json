@@ -1,0 +1,22 @@
+{
+  "name": "@em/a2a-compliance",
+  "version": "0.1.0",
+  "description": "EM-A2A Compliance Framework: KYA, AML, Audit Trail, Tax Reporting",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@em/a2a-core": "workspace:*",
+    "zod": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

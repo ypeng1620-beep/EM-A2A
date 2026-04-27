@@ -1,0 +1,20 @@
+{
+  "name": "@em/a2a-invest",
+  "version": "0.1.0",
+  "description": "A2A Invest — AI-powered investment advisory for Agent portfolios",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@em/a2a-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

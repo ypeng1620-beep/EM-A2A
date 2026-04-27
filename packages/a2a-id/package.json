@@ -1,0 +1,23 @@
+{
+  "name": "@em/a2a-id",
+  "version": "0.1.0",
+  "description": "A2A ID — Agent DID registry + KYA verification + SBT credentials",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@em/a2a-core": "workspace:*",
+    "@em/a2a-compliance": "workspace:*",
+    "zod": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

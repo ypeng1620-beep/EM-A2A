@@ -1,0 +1,29 @@
+{
+  "name": "@em/a2a-contracts",
+  "version": "0.1.0",
+  "description": "EM-A2A Solidity smart contract ABIs & types: RevenueSplitter, Escrow, AgentRegistry, MicroPayment",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b && cd ../../contracts && pnpm run compile",
+    "test": "cd ../../contracts && pnpm run test",
+    "clean": "rm -rf dist && rm -rf ../../contracts/artifacts ../../contracts/cache ../../contracts/typechain-types"
+  },
+  "dependencies": {
+    "@em/a2a-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "hardhat": "^2.22.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "typescript": "^5.5.0"
+  }
+}
