@@ -6,28 +6,60 @@
 
 B.AI 是 AI 世界的支付宝+身份证+运营商。EM-A2A 在此基础上，把支付宝的每个功能拆成独立可部署的 A2A 产品，通过 x402 支付协议 + 8004 链上身份 + 智能合约抽成实现变现。
 
+## MCP Plugin
+
+Agent 可通过 MCP (Model Context Protocol) 直接调用 A2A 工具：
+
+```bash
+npx @em/a2a-mcp
+```
+
+| 工具          | 功能                  |
+| ------------- | --------------------- |
+| `a2a_pay`     | 代理间 USDC/USDT 转账 |
+| `a2a_escrow`  | 托管锁仓/释放/退款    |
+| `a2a_credit`  | 信用评分/趋势/排行榜  |
+| `a2a_revenue` | 协议费率计算          |
+
+```json
+{
+  "mcpServers": {
+    "a2a": {
+      "command": "npx",
+      "args": ["@em/a2a-mcp"],
+      "env": {
+        "A2A_NETWORK": "shasta",
+        "A2A_PRIVATE_KEY": "your-key"
+      }
+    }
+  }
+}
+```
+
+> 安装 ClawHub Skill: [em-a2a](https://clawhub.ai) — 教 AI Agent 何时调用哪些 MCP 工具
+
 ## 产品矩阵 (10 个独立 npm 包)
 
-| 产品 | 包名 | 对标支付宝 | MVP |
-|------|------|-----------|-----|
-| A2A Pay | `@em/a2a-pay` | 支付/转账 | P0 |
-| A2A ID | `@em/a2a-id` | 实名认证 | P0 |
-| A2A Credit | `@em/a2a-credit` | 芝麻信用 | P0 |
-| A2A Market | `@em/a2a-market` | 商家服务 | P0 |
-| A2A Lend | `@em/a2a-lend` | 花呗/借呗 | P1 |
-| A2A Earn | `@em/a2a-earn` | 余额宝 | P1 |
-| A2A Insure | `@em/a2a-insure` | 保险 | P1 |
-| A2A Invoice | `@em/a2a-invoice` | 发票/缴费 | P2 |
-| A2A Invest | `@em/a2a-invest` | 蚂蚁财富 | P2 |
-| A2A Reward | `@em/a2a-reward` | 蚂蚁森林 | P2 |
+| 产品        | 包名              | 对标支付宝 | MVP |
+| ----------- | ----------------- | ---------- | --- |
+| A2A Pay     | `@em/a2a-pay`     | 支付/转账  | P0  |
+| A2A ID      | `@em/a2a-id`      | 实名认证   | P0  |
+| A2A Credit  | `@em/a2a-credit`  | 芝麻信用   | P0  |
+| A2A Market  | `@em/a2a-market`  | 商家服务   | P0  |
+| A2A Lend    | `@em/a2a-lend`    | 花呗/借呗  | P1  |
+| A2A Earn    | `@em/a2a-earn`    | 余额宝     | P1  |
+| A2A Insure  | `@em/a2a-insure`  | 保险       | P1  |
+| A2A Invoice | `@em/a2a-invoice` | 发票/缴费  | P2  |
+| A2A Invest  | `@em/a2a-invest`  | 蚂蚁财富   | P2  |
+| A2A Reward  | `@em/a2a-reward`  | 蚂蚁森林   | P2  |
 
 ## 共享基础设施
 
-| 包名 | 职责 |
-|------|------|
-| `@em/a2a-core` | 共享类型、x402 协议、8004 身份原语、链抽象层 |
-| `@em/a2a-contracts` | Solidity 智能合约 (抽成/托管/信用/支付) |
-| `@em/a2a-compliance` | KYC/AML/审计合规引擎 |
+| 包名                 | 职责                                         |
+| -------------------- | -------------------------------------------- |
+| `@em/a2a-core`       | 共享类型、x402 协议、8004 身份原语、链抽象层 |
+| `@em/a2a-contracts`  | Solidity 智能合约 (抽成/托管/信用/支付)      |
+| `@em/a2a-compliance` | KYC/AML/审计合规引擎                         |
 
 ## 技术栈
 
@@ -50,8 +82,10 @@ pnpm test
 
 ```
 EM-A2A/
-├── packages/          # 10+3 个独立 npm 包
+├── packages/          # 11 个独立 npm 包 (含 a2a-mcp)
 ├── contracts/         # Solidity 合约
+├── scripts/           # Demo + Showcase 脚本
+├── skills/            # ClawHub Skill 定义
 ├── docs/              # 架构/路线图/合规文档
 ├── pnpm-workspace.yaml
 ├── tsconfig.base.json

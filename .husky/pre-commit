@@ -1,1 +1,1 @@
-cd D:M-A2A && npx lint-staged
+cd /d/EM-A2A && npx lint-staged

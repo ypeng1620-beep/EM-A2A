@@ -1,0 +1,49 @@
+{
+  "name": "@em/a2a-mcp",
+  "version": "0.1.0",
+  "description": "EM-A2A MCP Server — Agent-to-Agent payments, escrow, credit, and identity tools for AI agents",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "a2a-mcp": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "dev": "tsx src/index.ts"
+  },
+  "keywords": [
+    "a2a",
+    "agent-to-agent",
+    "mcp",
+    "model-context-protocol",
+    "payment",
+    "escrow",
+    "tron",
+    "usdc",
+    "blockchain",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@em/a2a-core": "workspace:*",
+    "@em/a2a-pay": "workspace:*",
+    "@em/a2a-credit": "workspace:*",
+    "@em/a2a-id": "workspace:*",
+    "@em/a2a-compliance": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^3.0.0"
+  }
+}

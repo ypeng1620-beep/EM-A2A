@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+/**
+ * EM-A2A MCP Server — Entry Point
+ *
+ * 启动方式:
+ *   npx @em/a2a-mcp
+ *   或作为 MCP stdio transport:
+ *   node dist/index.js
+ *
+ * OpenClaw 配置 (mcpServers):
+ *   {
+ *     "mcpServers": {
+ *       "a2a": {
+ *         "command": "npx",
+ *         "args": ["@em/a2a-mcp"]
+ *       }
+ *     }
+ *   }
+ */
+
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { createServer } from './server.js'
+
+async function main() {
+  const server = createServer()
+  const transport = new StdioServerTransport()
+
+  // Tool count
+  const tools = ['a2a_pay', 'a2a_escrow', 'a2a_revenue', 'a2a_credit']
+
+  console.error(`⚡ EM-A2A MCP Server v0.1.0`)
+  console.error(`   Network: ${process.env.A2A_NETWORK || 'shasta'}`)
+  console.error(`   Tools: ${tools.join(', ')}`)
+
+  await server.connect(transport)
+
+  console.error('   Server connected (stdio). Waiting for requests...')
+}
+
+main().catch((e) => {
+  console.error('MCP Server failed to start:', e)
+  process.exit(1)
+})
