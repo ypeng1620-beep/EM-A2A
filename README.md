@@ -1,6 +1,6 @@
 # EM-A2A: AI Agent 链上经济体
 
-> 将支付宝的所有 C 端功能以 A2A（Agent-to-Agent）形态独立产品化，链上合规，抽成变现。
+> 将支付宝的所有 C 端功能以 A2A（Agent-to-Agent）形态独立产品化，链上合规。
 
 ## 定位
 
