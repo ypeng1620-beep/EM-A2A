@@ -58,6 +58,7 @@ export class A2ACredit {
     // Optional SQLite persistence
     if (config.dbPath && config.dbPath !== ':memory:') {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const Database = require('better-sqlite3')
         this.sqlite = new Database(config.dbPath)
         this.initSQLite()
@@ -126,9 +127,11 @@ export class A2ACredit {
     this.behaviors.set(did, records)
 
     if (this.sqlite) {
-      this.sqlite.prepare(
-        'INSERT INTO credit_behaviors (id, did, event, data, timestamp, tx_hash) VALUES (?, ?, ?, ?, ?, ?)'
-      ).run(record.id, did, event, JSON.stringify(data), record.timestamp, txHash ?? null)
+      this.sqlite
+        .prepare(
+          'INSERT INTO credit_behaviors (id, did, event, data, timestamp, tx_hash) VALUES (?, ?, ?, ?, ?, ?)',
+        )
+        .run(record.id, did, event, JSON.stringify(data), record.timestamp, txHash ?? null)
     }
 
     // Auto-recalculate
@@ -143,9 +146,9 @@ export class A2ACredit {
   calculateScore(did: AgentDID): CreditScore {
     const records = this.behaviors.get(did) ?? []
 
-    const transactionVolume = records.filter(r => r.event === 'payment').length
-    const completions = records.filter(r => r.event === 'order_completed').length
-    const disputes = records.filter(r => r.event === 'order_disputed').length
+    const transactionVolume = records.filter((r) => r.event === 'payment').length
+    const completions = records.filter((r) => r.event === 'order_completed').length
+    const disputes = records.filter((r) => r.event === 'order_disputed').length
     const totalOrders = completions + disputes
 
     const completionRate = totalOrders > 0 ? completions / totalOrders : 0.5
@@ -154,7 +157,7 @@ export class A2ACredit {
     const firstRecord = records[0]
     const accountAge = firstRecord ? Date.now() - firstRecord.timestamp : 0
 
-    const credentials = records.filter(r => r.event === 'credential_issued').length
+    const credentials = records.filter((r) => r.event === 'credential_issued').length
 
     const factors: CreditFactors = {
       transactionVolume,
@@ -185,16 +188,22 @@ export class A2ACredit {
     this.history.set(did, hist)
 
     if (this.sqlite) {
-      this.sqlite.prepare(`
+      this.sqlite
+        .prepare(
+          `
         INSERT INTO credit_scores (did, score, level, factors, updated_at)
         VALUES (?, ?, ?, ?, ?)
         ON CONFLICT(did) DO UPDATE SET score=excluded.score, level=excluded.level,
           factors=excluded.factors, updated_at=excluded.updated_at
-      `).run(did, score, level, JSON.stringify(factors), Date.now())
+      `,
+        )
+        .run(did, score, level, JSON.stringify(factors), Date.now())
 
-      this.sqlite.prepare(
-        'INSERT INTO credit_history (id, did, score, event, delta, timestamp) VALUES (?, ?, ?, ?, ?, ?)'
-      ).run(randomUUID(), did, score, 'score_update', delta, Date.now())
+      this.sqlite
+        .prepare(
+          'INSERT INTO credit_history (id, did, score, event, delta, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+        )
+        .run(randomUUID(), did, score, 'score_update', delta, Date.now())
     }
 
     return { did, score, level, updatedAt: Date.now(), factors, history: hist }
@@ -233,7 +242,7 @@ export class A2ACredit {
 
   getScoreTrend(did: AgentDID, periods = 10): { timestamp: number; score: number }[] {
     const hist = this.history.get(did) ?? []
-    if (hist.length <= periods) return hist.map(h => ({ timestamp: h.timestamp, score: h.score }))
+    if (hist.length <= periods) return hist.map((h) => ({ timestamp: h.timestamp, score: h.score }))
 
     const step = Math.floor(hist.length / periods)
     const sampled: { timestamp: number; score: number }[] = []
@@ -241,7 +250,10 @@ export class A2ACredit {
       sampled.push({ timestamp: hist[i].timestamp, score: hist[i].score })
     }
     if (sampled[sampled.length - 1] !== hist[hist.length - 1]) {
-      sampled.push({ timestamp: hist[hist.length - 1].timestamp, score: hist[hist.length - 1].score })
+      sampled.push({
+        timestamp: hist[hist.length - 1].timestamp,
+        score: hist[hist.length - 1].score,
+      })
     }
     return sampled
   }

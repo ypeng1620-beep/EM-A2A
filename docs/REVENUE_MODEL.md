@@ -9,15 +9,15 @@ interface FixedTierConfig {
 }
 
 interface TierRule {
-  monthlyVolumeUSD: number   // 月流水阈值
-  rate: number               // 费率 (0.005 = 0.5%)
+  monthlyVolumeUSD: number // 月流水阈值
+  rate: number // 费率 (0.005 = 0.5%)
 }
 
 // 默认阶梯
 const DEFAULT_TIERS: TierRule[] = [
-  { monthlyVolumeUSD: 0,      rate: 0.01  },  // 基础 1%
-  { monthlyVolumeUSD: 10000,  rate: 0.008 },  // $10k+ → 0.8%
-  { monthlyVolumeUSD: 100000, rate: 0.005 },  // $100k+ → 0.5%
+  { monthlyVolumeUSD: 0, rate: 0.01 }, // 基础 1%
+  { monthlyVolumeUSD: 10000, rate: 0.008 }, // $10k+ → 0.8%
+  { monthlyVolumeUSD: 100000, rate: 0.005 }, // $100k+ → 0.5%
 ]
 ```
 
@@ -26,10 +26,10 @@ const DEFAULT_TIERS: TierRule[] = [
 ```typescript
 interface VariableFloatConfig {
   mode: 'variable_float'
-  baseRate: number           // 基础费率
-  riskMultiplier: Range      // 风险系数范围
-  creditMultiplier: Range    // 信用系数范围
-  typeMultiplier: Record<string, number>  // 交易类型系数
+  baseRate: number // 基础费率
+  riskMultiplier: Range // 风险系数范围
+  creditMultiplier: Range // 信用系数范围
+  typeMultiplier: Record<string, number> // 交易类型系数
 }
 
 // 计算公式
@@ -57,7 +57,7 @@ function calculateFee(
     bytes32 agentId
 ) public view returns (uint256 fee, uint256 rate) {
     ProductConfig memory config = products[productId];
-    
+
     if (config.mode == Mode.FIXED_TIER) {
         rate = getTierRate(productId, config.monthlyVolume);
     } else {
@@ -65,7 +65,7 @@ function calculateFee(
         uint256 credit = getCreditFactor(agentId);
         rate = config.baseRate * risk * credit / 1e4;
     }
-    
+
     fee = amount * rate / 1e4;
     return (fee, rate);
 }

@@ -5,7 +5,7 @@
  * These are intentionally minimal — only exposing the surface we consume.
  */
 
-declare module "tronweb" {
+declare module 'tronweb' {
   export interface TronWebOptions {
     fullHost?: string
     solidityNode?: string
@@ -104,4 +104,4 @@ declare module "tronweb" {
   }
 }
 
-declare const TronWeb: typeof import("tronweb").TronWeb
+declare const TronWeb: typeof import('tronweb').TronWeb

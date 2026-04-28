@@ -39,41 +39,70 @@ describe('A2AInsure', () => {
         creditScore: 600,
       })
       expect(policy.type).toBe('payment')
-      expect(policy.premiumRate).toBeGreaterThanOrEqual(0.10)
-      expect(policy.premiumRate).toBeLessThan(0.20)
+      expect(policy.premiumRate).toBeGreaterThanOrEqual(0.1)
+      expect(policy.premiumRate).toBeLessThan(0.2)
     })
 
     it('should lower premium for high credit score', () => {
       const low = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:lq', counterpartyId: 'did:a',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 30, creditScore: 350,
+        type: 'fulfillment',
+        holderId: 'did:lq',
+        counterpartyId: 'did:a',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 350,
       })
       const high = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:hq', counterpartyId: 'did:b',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 30, creditScore: 900,
+        type: 'fulfillment',
+        holderId: 'did:hq',
+        counterpartyId: 'did:b',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 900,
       })
       expect(high.premiumRate).toBeLessThan(low.premiumRate)
       expect(BigInt(high.premium)).toBeLessThan(BigInt(low.premium))
     })
 
     it('should reject invalid term', () => {
-      expect(() => insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:a', counterpartyId: 'did:b',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 0, creditScore: 700,
-      })).toThrow('1–365 days')
+      expect(() =>
+        insure.issuePolicy({
+          type: 'fulfillment',
+          holderId: 'did:a',
+          counterpartyId: 'did:b',
+          coverageAmount: '100000000',
+          currency: 'USDC',
+          termDays: 0,
+          creditScore: 700,
+        }),
+      ).toThrow('1–365 days')
 
-      expect(() => insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:a', counterpartyId: 'did:b',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 400, creditScore: 700,
-      })).toThrow('1–365 days')
+      expect(() =>
+        insure.issuePolicy({
+          type: 'fulfillment',
+          holderId: 'did:a',
+          counterpartyId: 'did:b',
+          coverageAmount: '100000000',
+          currency: 'USDC',
+          termDays: 400,
+          creditScore: 700,
+        }),
+      ).toThrow('1–365 days')
     })
   })
 
   describe('Claims', () => {
     it('should file a claim against an active policy', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       const claim = insure.fileClaim({
         policyId: policy.id,
@@ -89,58 +118,86 @@ describe('A2AInsure', () => {
 
     it('should reject claim on expired policy', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 1, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 1,
+        creditScore: 700,
       })
       // Manually expire
       const p = insure.getPolicy(policy.id)!
       ;(p as any).expiresAt = Date.now() - 1000
       insure.processExpired()
 
-      expect(() => insure.fileClaim({
-        policyId: policy.id,
-        claimantId: 'did:buyer',
-        amount: '100000000',
-        reason: 'Late',
-      })).toThrow('not active')
+      expect(() =>
+        insure.fileClaim({
+          policyId: policy.id,
+          claimantId: 'did:buyer',
+          amount: '100000000',
+          reason: 'Late',
+        }),
+      ).toThrow('not active')
     })
 
     it('should reject claim exceeding coverage', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
-      expect(() => insure.fileClaim({
-        policyId: policy.id,
-        claimantId: 'did:buyer',
-        amount: '200000000',
-        reason: 'Over limit',
-      })).toThrow('exceeds coverage')
+      expect(() =>
+        insure.fileClaim({
+          policyId: policy.id,
+          claimantId: 'did:buyer',
+          amount: '200000000',
+          reason: 'Over limit',
+        }),
+      ).toThrow('exceeds coverage')
     })
 
     it('should reject zero amount claim', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
-      expect(() => insure.fileClaim({
-        policyId: policy.id,
-        claimantId: 'did:buyer',
-        amount: '0',
-        reason: 'Free?',
-      })).toThrow('must be positive')
+      expect(() =>
+        insure.fileClaim({
+          policyId: policy.id,
+          claimantId: 'did:buyer',
+          amount: '0',
+          reason: 'Free?',
+        }),
+      ).toThrow('must be positive')
     })
   })
 
   describe('Claim Resolution', () => {
     it('should approve a claim and compute payout', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       const claim = insure.fileClaim({
-        policyId: policy.id, claimantId: 'did:buyer',
-        amount: '200000000', reason: 'Breach',
+        policyId: policy.id,
+        claimantId: 'did:buyer',
+        amount: '200000000',
+        reason: 'Breach',
       })
 
       const approved = insure.approveClaim(claim.id, policy.id, '0xpayout')
@@ -153,12 +210,19 @@ describe('A2AInsure', () => {
 
     it('should reject a claim', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       const claim = insure.fileClaim({
-        policyId: policy.id, claimantId: 'did:buyer',
-        amount: '100000000', reason: 'Test',
+        policyId: policy.id,
+        claimantId: 'did:buyer',
+        amount: '100000000',
+        reason: 'Test',
       })
 
       const rejected = insure.rejectClaim(claim.id, policy.id, 'Insufficient evidence')
@@ -168,12 +232,19 @@ describe('A2AInsure', () => {
 
     it('should settle an approved claim', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       const claim = insure.fileClaim({
-        policyId: policy.id, claimantId: 'did:buyer',
-        amount: '100000000', reason: 'Lost goods',
+        policyId: policy.id,
+        claimantId: 'did:buyer',
+        amount: '100000000',
+        reason: 'Lost goods',
       })
       insure.approveClaim(claim.id, policy.id)
 
@@ -184,12 +255,19 @@ describe('A2AInsure', () => {
 
     it('should reject settling non-approved claim', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:buyer', counterpartyId: 'did:seller',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:buyer',
+        counterpartyId: 'did:seller',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       const claim = insure.fileClaim({
-        policyId: policy.id, claimantId: 'did:buyer',
-        amount: '100000000', reason: 'Test',
+        policyId: policy.id,
+        claimantId: 'did:buyer',
+        amount: '100000000',
+        reason: 'Test',
       })
       expect(() => insure.settleClaim(claim.id, policy.id)).toThrow('not approved')
     })
@@ -198,8 +276,13 @@ describe('A2AInsure', () => {
   describe('Expiry', () => {
     it('should expire policies past their term', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:a', counterpartyId: 'did:b',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 1, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:a',
+        counterpartyId: 'did:b',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 1,
+        creditScore: 700,
       })
       const p = insure.getPolicy(policy.id)!
       ;(p as any).expiresAt = Date.now() - 1000
@@ -213,12 +296,22 @@ describe('A2AInsure', () => {
   describe('Queries', () => {
     it('should return agent policies', () => {
       insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:x', counterpartyId: 'did:y',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:x',
+        counterpartyId: 'did:y',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
       insure.issuePolicy({
-        type: 'payment', holderId: 'did:z', counterpartyId: 'did:x',
-        coverageAmount: '200000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'payment',
+        holderId: 'did:z',
+        counterpartyId: 'did:x',
+        coverageAmount: '200000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
 
       expect(insure.getAgentPolicies('did:x').length).toBe(2)
@@ -227,8 +320,13 @@ describe('A2AInsure', () => {
 
     it('should filter policies by status', () => {
       const p = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:a', counterpartyId: 'did:b',
-        coverageAmount: '100000000', currency: 'USDC', termDays: 1, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:a',
+        counterpartyId: 'did:b',
+        coverageAmount: '100000000',
+        currency: 'USDC',
+        termDays: 1,
+        creditScore: 700,
       })
       ;(insure.getPolicy(p.id) as any).expiresAt = Date.now() - 1000
       insure.processExpired()
@@ -239,11 +337,26 @@ describe('A2AInsure', () => {
 
     it('should return claims for a policy', () => {
       const policy = insure.issuePolicy({
-        type: 'fulfillment', holderId: 'did:a', counterpartyId: 'did:b',
-        coverageAmount: '500000000', currency: 'USDC', termDays: 30, creditScore: 700,
+        type: 'fulfillment',
+        holderId: 'did:a',
+        counterpartyId: 'did:b',
+        coverageAmount: '500000000',
+        currency: 'USDC',
+        termDays: 30,
+        creditScore: 700,
       })
-      insure.fileClaim({ policyId: policy.id, claimantId: 'did:a', amount: '100000000', reason: 'C1' })
-      insure.fileClaim({ policyId: policy.id, claimantId: 'did:a', amount: '50000000', reason: 'C2' })
+      insure.fileClaim({
+        policyId: policy.id,
+        claimantId: 'did:a',
+        amount: '100000000',
+        reason: 'C1',
+      })
+      insure.fileClaim({
+        policyId: policy.id,
+        claimantId: 'did:a',
+        amount: '50000000',
+        reason: 'C2',
+      })
 
       expect(insure.getClaims(policy.id).length).toBe(2)
       expect(insure.getClaims('policy_fake').length).toBe(0)
@@ -262,7 +375,7 @@ describe('A2AInsure', () => {
     it('should estimate premium without issuing policy', () => {
       const est = A2AInsure.estimatePremium('fulfillment', '100000000', 800)
       expect(est.rate).toBeGreaterThan(0.15)
-      expect(est.rate).toBeLessThan(0.20)
+      expect(est.rate).toBeLessThan(0.2)
       expect(BigInt(est.premium)).toBeGreaterThan(0n)
     })
   })

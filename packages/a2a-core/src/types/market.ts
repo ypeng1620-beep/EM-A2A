@@ -31,13 +31,13 @@ export interface ServiceListing {
   description: string
   category: AgentCategory
   type: ServiceType
-  price: string          // USDC 金额
+  price: string // USDC 金额
   currency: 'USDC' | 'USDT'
-  turnaround: number     // 预计交付时间 (秒)
-  credentials: string[]  // 资质 SBT ID 列表
-  rating: number         // 1-5
+  turnaround: number // 预计交付时间 (秒)
+  credentials: string[] // 资质 SBT ID 列表
+  rating: number // 1-5
   reviewCount: number
-  successRate: number    // 0-1
+  successRate: number // 0-1
   active: boolean
   createdAt: number
   updatedAt: number

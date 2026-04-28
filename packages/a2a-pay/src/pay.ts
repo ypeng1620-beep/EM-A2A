@@ -44,7 +44,13 @@ export class A2APay {
 
   async transfer(params: TransferParams): Promise<TransferResult> {
     // 1. 验证支付请求
-    const request = createPaymentRequest(params.from, params.to, params.token, params.amount, params.memo)
+    const request = createPaymentRequest(
+      params.from,
+      params.to,
+      params.token,
+      params.amount,
+      params.memo,
+    )
     const validation = validatePaymentRequest(request)
     if (!validation.valid) {
       return { success: false, fee: '0', feeRate: 0, netAmount: '0', error: validation.reason }
@@ -57,7 +63,7 @@ export class A2APay {
         amount: params.amount,
         to: params.to,
         amlScore: amlResult.score,
-        patterns: amlResult.patterns.map(p => p.name),
+        patterns: amlResult.patterns.map((p) => p.name),
         flagged: true,
       })
       return {
@@ -65,7 +71,7 @@ export class A2APay {
         fee: '0',
         feeRate: 0,
         netAmount: '0',
-        error: `AML check failed: ${amlResult.patterns.map(p => p.name).join(', ')}`,
+        error: `AML check failed: ${amlResult.patterns.map((p) => p.name).join(', ')}`,
       }
     }
 
@@ -84,19 +90,32 @@ export class A2APay {
       receipt = await this.chain.transferStablecoin(params.to, params.token, netAmount, params.memo)
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error)
-      return { success: false, fee: revenueResult.fee, feeRate: revenueResult.rate, netAmount, error: errMsg }
+      return {
+        success: false,
+        fee: revenueResult.fee,
+        feeRate: revenueResult.rate,
+        netAmount,
+        error: errMsg,
+      }
     }
 
     // 5. 记录审计
-    this.audit.record('payment_transfer', params.from, this.config.productId, {
-      amount: params.amount,
-      fee: revenueResult.fee,
-      feeRate: revenueResult.rate,
-      netAmount,
-      to: params.to,
-      txHash: receipt.txHash,
-      token: params.token,
-    }, receipt.txHash, receipt.chainId)
+    this.audit.record(
+      'payment_transfer',
+      params.from,
+      this.config.productId,
+      {
+        amount: params.amount,
+        fee: revenueResult.fee,
+        feeRate: revenueResult.rate,
+        netAmount,
+        to: params.to,
+        txHash: receipt.txHash,
+        token: params.token,
+      },
+      receipt.txHash,
+      receipt.chainId,
+    )
 
     // 6. 更新 AML 历史
     this.aml.recordTransaction(params.from, params.amount, params.to)

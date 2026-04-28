@@ -73,9 +73,7 @@ export class TronAdapter implements IChainAdapter {
     this.ensureConnected()
 
     const contractAddress =
-      token === 'USDT'
-        ? 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
-        : 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
+      token === 'USDT' ? 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' : 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
 
     return this.withRetry(async () => {
       const tx = await this.tronWeb.transactionBuilder.triggerSmartContract(
@@ -150,7 +148,9 @@ export class TronAdapter implements IChainAdapter {
   // Identity
   // =========================================================================
 
-  async registerAgent(metadata: Record<string, unknown>): Promise<{ did: AgentDID; txHash: string }> {
+  async registerAgent(
+    metadata: Record<string, unknown>,
+  ): Promise<{ did: AgentDID; txHash: string }> {
     this.ensureConnected()
     this.requireContract(this.config.contracts.agentRegistry)
 
@@ -178,7 +178,8 @@ export class TronAdapter implements IChainAdapter {
     // In TronWeb, call() returns the raw values
     if (!result || !result.owner) return null
 
-    const active = result.active === true || result.active === 'true' || result.active?.toString() === '1'
+    const active =
+      result.active === true || result.active === 'true' || result.active?.toString() === '1'
     const registeredAt =
       typeof result.registeredAt === 'bigint'
         ? Number(result.registeredAt) * 1000
@@ -445,7 +446,7 @@ export class TronAdapter implements IChainAdapter {
 
     // Poll until transaction is confirmed
     for (let attempt = 0; attempt < 30; attempt++) {
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      await new Promise((resolve) => setTimeout(resolve, 3000))
       try {
         const txInfo = await this.tronWeb.trx.getTransaction(txHash)
         if (txInfo && txInfo.blockNumber) {
@@ -522,7 +523,7 @@ export class TronAdapter implements IChainAdapter {
       } catch (error) {
         lastError = error
         if (attempt < MAX_RETRIES - 1) {
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * Math.pow(2, attempt)))
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * Math.pow(2, attempt)))
         }
       }
     }

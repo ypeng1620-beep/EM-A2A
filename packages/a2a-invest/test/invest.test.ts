@@ -37,7 +37,7 @@ describe('A2AInvest', () => {
     it('should provide questionnaire', () => {
       const q = A2AInvest.getQuestionnaire()
       expect(q.length).toBe(5)
-      q.forEach(item => {
+      q.forEach((item) => {
         expect(item.options.length).toBe(5)
       })
     })
@@ -50,7 +50,7 @@ describe('A2AInvest', () => {
         name: 'My Portfolio',
         assets: [
           { token: 'USDC', allocation: 0.4, amount: '400000000', apy: 0.05 },
-          { token: 'ETH', allocation: 0.6, amount: '600000000', apy: 0.20 },
+          { token: 'ETH', allocation: 0.6, amount: '600000000', apy: 0.2 },
         ],
       })
 
@@ -79,7 +79,7 @@ describe('A2AInvest', () => {
           name: 'Bad Alloc',
           assets: [
             { token: 'USDC', allocation: 0.5, amount: '200000000', apy: 0.05 },
-            { token: 'ETH', allocation: 0.3, amount: '200000000', apy: 0.20 },
+            { token: 'ETH', allocation: 0.3, amount: '200000000', apy: 0.2 },
           ],
         }),
       ).toThrow('sum to 1')
@@ -91,7 +91,7 @@ describe('A2AInvest', () => {
         name: 'Test',
         assets: [
           { token: 'USDC', allocation: 0.5, amount: '500000000', apy: 0.05 },
-          { token: 'ETH', allocation: 0.5, amount: '500000000', apy: 0.20 },
+          { token: 'ETH', allocation: 0.5, amount: '500000000', apy: 0.2 },
         ],
       })
 
@@ -123,9 +123,9 @@ describe('A2AInvest', () => {
       })
       invest.closePortfolio(port.id)
 
-      expect(() =>
-        invest.rebalancePortfolio(port.id, [{ token: 'USDC', allocation: 1 }]),
-      ).toThrow('Cannot rebalance')
+      expect(() => invest.rebalancePortfolio(port.id, [{ token: 'USDC', allocation: 1 }])).toThrow(
+        'Cannot rebalance',
+      )
     })
   })
 
@@ -211,7 +211,7 @@ describe('A2AInvest', () => {
       })
 
       const recs = invest.getRecommendations('conservative', '10000000')
-      expect(recs.some(r => r.strategy.type === 'custom_safe')).toBe(true)
+      expect(recs.some((r) => r.strategy.type === 'custom_safe')).toBe(true)
     })
   })
 
@@ -225,7 +225,7 @@ describe('A2AInvest', () => {
       invest.createPortfolio({
         agentId: 'did:x',
         name: 'P2',
-        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.20 }],
+        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.2 }],
       })
       invest.createPortfolio({
         agentId: 'did:y',
@@ -263,7 +263,7 @@ describe('A2AInvest', () => {
       invest.createPortfolio({
         agentId: 'did:b',
         name: 'P2',
-        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.20 }],
+        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.2 }],
       })
 
       expect(BigInt(invest.getTotalAUM())).toBe(300000000n)
@@ -278,7 +278,7 @@ describe('A2AInvest', () => {
       invest.createPortfolio({
         agentId: 'did:a',
         name: 'P2',
-        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.20 }],
+        assets: [{ token: 'ETH', allocation: 1, amount: '200000000', apy: 0.2 }],
       })
 
       expect(BigInt(invest.getAgentAUM('did:a'))).toBe(300000000n)

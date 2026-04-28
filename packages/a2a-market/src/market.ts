@@ -148,11 +148,22 @@ export class A2AMarket {
     `)
 
     stmt.run(
-      listing.id, listing.agentId, listing.name, listing.description,
-      listing.category, listing.type, listing.price, listing.currency,
-      listing.turnaround, JSON.stringify(listing.credentials),
-      listing.rating, listing.reviewCount, listing.successRate,
-      listing.active ? 1 : 0, listing.createdAt, listing.updatedAt,
+      listing.id,
+      listing.agentId,
+      listing.name,
+      listing.description,
+      listing.category,
+      listing.type,
+      listing.price,
+      listing.currency,
+      listing.turnaround,
+      JSON.stringify(listing.credentials),
+      listing.rating,
+      listing.reviewCount,
+      listing.successRate,
+      listing.active ? 1 : 0,
+      listing.createdAt,
+      listing.updatedAt,
     )
 
     this.audit.record('market_listing_created', params.agentId, this.config.productId, {
@@ -211,7 +222,9 @@ export class A2AMarket {
   }
 
   getAgentListings(agentId: AgentDID): ServiceListing[] {
-    const rows = this.db.prepare('SELECT * FROM listings WHERE agent_id = ? AND active = 1').all(agentId) as Array<Record<string, unknown>>
+    const rows = this.db
+      .prepare('SELECT * FROM listings WHERE agent_id = ? AND active = 1')
+      .all(agentId) as Array<Record<string, unknown>>
     return rows.map(this.rowToListing)
   }
 
@@ -249,9 +262,17 @@ export class A2AMarket {
     `)
 
     stmt.run(
-      order.id, order.listingId, order.buyerId, order.sellerId,
-      order.amount, order.fee, order.feeRate, order.status,
-      order.createdAt, order.deadline, order.requirements,
+      order.id,
+      order.listingId,
+      order.buyerId,
+      order.sellerId,
+      order.amount,
+      order.fee,
+      order.feeRate,
+      order.status,
+      order.createdAt,
+      order.deadline,
+      order.requirements,
     )
 
     this.audit.record('market_order_created', buyerId, this.config.productId, {
@@ -279,21 +300,25 @@ export class A2AMarket {
 
     values.push(orderId)
 
-    const result = this.db.prepare(
-      `UPDATE orders SET ${fields.join(', ')} WHERE id = ?`,
-    ).run(...values)
+    const result = this.db
+      .prepare(`UPDATE orders SET ${fields.join(', ')} WHERE id = ?`)
+      .run(...values)
 
     return result.changes > 0
   }
 
   getOrder(orderId: string): Order | null {
-    const row = this.db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId) as Record<string, unknown> | undefined
+    const row = this.db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId) as
+      | Record<string, unknown>
+      | undefined
     return row ? this.rowToOrder(row) : null
   }
 
   getAgentOrders(agentId: AgentDID, as: 'buyer' | 'seller' = 'buyer'): Order[] {
     const field = as === 'buyer' ? 'buyer_id' : 'seller_id'
-    const rows = this.db.prepare(`SELECT * FROM orders WHERE ${field} = ? ORDER BY created_at DESC LIMIT 50`).all(agentId) as Array<Record<string, unknown>>
+    const rows = this.db
+      .prepare(`SELECT * FROM orders WHERE ${field} = ? ORDER BY created_at DESC LIMIT 50`)
+      .all(agentId) as Array<Record<string, unknown>>
     return rows.map(this.rowToOrder)
   }
 
@@ -327,28 +352,47 @@ export class A2AMarket {
       createdAt: Date.now(),
     }
 
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       INSERT INTO reviews (id, order_id, reviewer_id, subject_id, rating, comment, tx_hash, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(review.id, review.orderId, review.reviewerId, review.subjectId, review.rating, review.comment, review.txHash, review.createdAt)
+    `,
+      )
+      .run(
+        review.id,
+        review.orderId,
+        review.reviewerId,
+        review.subjectId,
+        review.rating,
+        review.comment,
+        review.txHash,
+        review.createdAt,
+      )
 
     // Update listing rating
-    const listing = this.db.prepare('SELECT * FROM listings WHERE id = ?').get(order.listingId) as Record<string, unknown> | undefined
+    const listing = this.db.prepare('SELECT * FROM listings WHERE id = ?').get(order.listingId) as
+      | Record<string, unknown>
+      | undefined
     if (listing) {
       const currentRating = listing.rating as number
       const currentCount = listing.review_count as number
       const newCount = currentCount + 1
       const newRating = (currentRating * currentCount + rating) / newCount
 
-      this.db.prepare('UPDATE listings SET rating = ?, review_count = ? WHERE id = ?').run(newRating, newCount, order.listingId)
+      this.db
+        .prepare('UPDATE listings SET rating = ?, review_count = ? WHERE id = ?')
+        .run(newRating, newCount, order.listingId)
     }
 
     return review
   }
 
   getAgentReviews(agentId: AgentDID): Review[] {
-    const rows = this.db.prepare('SELECT * FROM reviews WHERE subject_id = ? ORDER BY created_at DESC LIMIT 50').all(agentId) as Array<Record<string, unknown>>
-    return rows.map(r => ({
+    const rows = this.db
+      .prepare('SELECT * FROM reviews WHERE subject_id = ? ORDER BY created_at DESC LIMIT 50')
+      .all(agentId) as Array<Record<string, unknown>>
+    return rows.map((r) => ({
       id: r.id as string,
       orderId: r.order_id as string,
       reviewerId: r.reviewer_id as string,
@@ -365,9 +409,15 @@ export class A2AMarket {
   // =========================================================================
 
   getStats(): { totalListings: number; totalOrders: number; totalReviews: number } {
-    const listings = this.db.prepare('SELECT COUNT(*) as count FROM listings WHERE active = 1').get() as { count: number }
-    const orders = this.db.prepare('SELECT COUNT(*) as count FROM orders').get() as { count: number }
-    const reviews = this.db.prepare('SELECT COUNT(*) as count FROM reviews').get() as { count: number }
+    const listings = this.db
+      .prepare('SELECT COUNT(*) as count FROM listings WHERE active = 1')
+      .get() as { count: number }
+    const orders = this.db.prepare('SELECT COUNT(*) as count FROM orders').get() as {
+      count: number
+    }
+    const reviews = this.db.prepare('SELECT COUNT(*) as count FROM reviews').get() as {
+      count: number
+    }
 
     return {
       totalListings: listings.count,

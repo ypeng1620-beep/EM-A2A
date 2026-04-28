@@ -13,13 +13,13 @@ export class TaxReporter {
     return {
       period: `${new Date(auditReport.period.start).toISOString()} ~ ${new Date(auditReport.period.end).toISOString()}`,
       taxableAmount,
-      fees: (BigInt(taxableAmount) * 30n / 100n).toString(), // 30% tax estimate
+      fees: ((BigInt(taxableAmount) * 30n) / 100n).toString(), // 30% tax estimate
       currency: 'USDC',
       generatedAt: Date.now(),
       jurisdiction,
       transactions: auditReport.entries
-        .filter(e => e.data.amount)
-        .map(e => ({
+        .filter((e) => e.data.amount)
+        .map((e) => ({
           txHash: e.txHash ?? '',
           amount: e.data.amount as string,
           fee: (e.data.fee as string) ?? '0',

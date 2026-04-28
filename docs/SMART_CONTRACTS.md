@@ -2,14 +2,14 @@
 
 ## 合约清单
 
-| 合约 | 功能 | 抽成关系 |
-|------|------|---------|
-| `RevenueSplitter.sol` | 双模式抽成引擎 | 核心 — 所有产品调用 |
-| `EscrowService.sol` | 服务托管支付 | 托管 → 验收 → 释放 (含抽成) |
-| `AgentRegistry.sol` | Agent DID 注册 | 注册费 |
-| `CreditScoreOracle.sol` | 信用分预言机 | 查询费 |
-| `MicroPaymentChannel.sol` | 微支付批量通道 | 批量结算，节省 Gas |
-| `ServiceBond.sol` | 服务质押保险 | 保费 + 理赔 |
+| 合约                      | 功能           | 抽成关系                    |
+| ------------------------- | -------------- | --------------------------- |
+| `RevenueSplitter.sol`     | 双模式抽成引擎 | 核心 — 所有产品调用         |
+| `EscrowService.sol`       | 服务托管支付   | 托管 → 验收 → 释放 (含抽成) |
+| `AgentRegistry.sol`       | Agent DID 注册 | 注册费                      |
+| `CreditScoreOracle.sol`   | 信用分预言机   | 查询费                      |
+| `MicroPaymentChannel.sol` | 微支付批量通道 | 批量结算，节省 Gas          |
+| `ServiceBond.sol`         | 服务质押保险   | 保费 + 理赔                 |
 
 ## Contract: RevenueSplitter.sol
 

@@ -51,9 +51,9 @@ export interface Claim {
 }
 
 export interface A2AInsureConfig {
-  fulfillmentBaseRate?: number    // 0.15–0.25
-  paymentBaseRate?: number        // 0.10–0.20
-  deductibleRatio?: number        // portion of coverageAmount
+  fulfillmentBaseRate?: number // 0.15–0.25
+  paymentBaseRate?: number // 0.10–0.20
+  deductibleRatio?: number // portion of coverageAmount
 }
 
 // ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ function bigSub(a: string, b: string): string {
 }
 
 function bigMulRatio(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000)) / 1_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000))) / 1_000_000n).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -79,15 +79,11 @@ function bigMulRatio(amount: string, ratio: number): string {
 
 const BASE_RATES: Record<InsuranceType, { min: number; max: number }> = {
   fulfillment: { min: 0.15, max: 0.25 },
-  payment:     { min: 0.10, max: 0.20 },
+  payment: { min: 0.1, max: 0.2 },
 }
 
 /** Premium rate = base rate adjusted by credit score. */
-function calcPremiumRate(
-  type: InsuranceType,
-  creditScore: number,
-  configBase?: number,
-): number {
+function calcPremiumRate(type: InsuranceType, creditScore: number, configBase?: number): number {
   const range = BASE_RATES[type]
   // Score 950 → pay min rate; score 300 → pay max rate
   const factor = (950 - creditScore) / (950 - 300)
@@ -110,7 +106,7 @@ export class A2AInsure {
     this.policies = new Map()
     this.claims = new Map()
     this.fulfillmentBaseRate = config.fulfillmentBaseRate ?? 0.15
-    this.paymentBaseRate = config.paymentBaseRate ?? 0.10
+    this.paymentBaseRate = config.paymentBaseRate ?? 0.1
     this.deductibleRatio = config.deductibleRatio ?? 0.05 // 5% deductible
   }
 
@@ -132,9 +128,7 @@ export class A2AInsure {
       throw new Error('Term must be 1–365 days')
     }
 
-    const baseRate = params.type === 'fulfillment'
-      ? this.fulfillmentBaseRate
-      : this.paymentBaseRate
+    const baseRate = params.type === 'fulfillment' ? this.fulfillmentBaseRate : this.paymentBaseRate
 
     const premiumRate = calcPremiumRate(params.type, params.creditScore, baseRate)
     const premium = bigMulRatio(params.coverageAmount, premiumRate)
@@ -283,9 +277,9 @@ export class A2AInsure {
 
   getAgentPolicies(agentId: string, status?: PolicyStatus): Policy[] {
     const all = [...this.policies.values()].filter(
-      p => p.holderId === agentId || p.counterpartyId === agentId,
+      (p) => p.holderId === agentId || p.counterpartyId === agentId,
     )
-    return status ? all.filter(p => p.status === status) : all
+    return status ? all.filter((p) => p.status === status) : all
   }
 
   getClaims(policyId: string): Claim[] {
@@ -294,7 +288,7 @@ export class A2AInsure {
 
   getClaim(claimId: string, policyId: string): Claim | null {
     const claims = this.claims.get(policyId) ?? []
-    return claims.find(c => c.id === claimId) ?? null
+    return claims.find((c) => c.id === claimId) ?? null
   }
 
   /** Estimate premium without issuing a policy. */
@@ -320,7 +314,7 @@ export class A2AInsure {
 
   private mustGetClaim(claimId: string, policyId: string): Claim {
     const claims = this.claims.get(policyId) ?? []
-    const claim = claims.find(c => c.id === claimId)
+    const claim = claims.find((c) => c.id === claimId)
     if (!claim) throw new Error(`Claim not found: ${claimId}`)
     return claim
   }

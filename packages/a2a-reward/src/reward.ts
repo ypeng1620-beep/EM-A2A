@@ -42,7 +42,10 @@ export interface Achievement {
   name: string
   description: string
   icon: string
-  criteria: { type: 'total_points' | 'transactions' | 'referrals' | 'streak_days'; threshold: number }
+  criteria: {
+    type: 'total_points' | 'transactions' | 'referrals' | 'streak_days'
+    threshold: number
+  }
 }
 
 export interface LeaderboardEntry {
@@ -62,10 +65,10 @@ export interface RedemptionOption {
 }
 
 export interface A2ARewardConfig {
-  pointsPerTransaction?: string  // 每次交易基础积分
-  referralBonus?: string         // 推荐奖励积分
-  milestoneBonus?: string        // 里程碑奖励积分
-  expiryDays?: number            // 积分过期天数 (365)
+  pointsPerTransaction?: string // 每次交易基础积分
+  referralBonus?: string // 推荐奖励积分
+  milestoneBonus?: string // 里程碑奖励积分
+  expiryDays?: number // 积分过期天数 (365)
 }
 
 // ---------------------------------------------------------------------------
@@ -85,12 +88,48 @@ const LEVELS = [
 // ---------------------------------------------------------------------------
 
 const DEFAULT_ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_trade', name: '初次交易', description: '完成第一笔 Agent 交易', icon: '🤝', criteria: { type: 'transactions', threshold: 1 } },
-  { id: 'power_trader', name: '交易达人', description: '累计完成 100 笔交易', icon: '📈', criteria: { type: 'transactions', threshold: 100 } },
-  { id: 'whale', name: '积分巨鲸', description: '累计获得 100000 积分', icon: '🐋', criteria: { type: 'total_points', threshold: 100000 } },
-  { id: 'millionaire', name: '百万富翁', description: '累计获得 1000000 积分', icon: '💎', criteria: { type: 'total_points', threshold: 1000000 } },
-  { id: 'networker', name: '社交达人', description: '成功推荐 10 个 Agent', icon: '🌐', criteria: { type: 'referrals', threshold: 10 } },
-  { id: 'dedicated', name: '坚持不懈', description: '连续活跃 30 天', icon: '🔥', criteria: { type: 'streak_days', threshold: 30 } },
+  {
+    id: 'first_trade',
+    name: '初次交易',
+    description: '完成第一笔 Agent 交易',
+    icon: '🤝',
+    criteria: { type: 'transactions', threshold: 1 },
+  },
+  {
+    id: 'power_trader',
+    name: '交易达人',
+    description: '累计完成 100 笔交易',
+    icon: '📈',
+    criteria: { type: 'transactions', threshold: 100 },
+  },
+  {
+    id: 'whale',
+    name: '积分巨鲸',
+    description: '累计获得 100000 积分',
+    icon: '🐋',
+    criteria: { type: 'total_points', threshold: 100000 },
+  },
+  {
+    id: 'millionaire',
+    name: '百万富翁',
+    description: '累计获得 1000000 积分',
+    icon: '💎',
+    criteria: { type: 'total_points', threshold: 1000000 },
+  },
+  {
+    id: 'networker',
+    name: '社交达人',
+    description: '成功推荐 10 个 Agent',
+    icon: '🌐',
+    criteria: { type: 'referrals', threshold: 10 },
+  },
+  {
+    id: 'dedicated',
+    name: '坚持不懈',
+    description: '连续活跃 30 天',
+    icon: '🔥',
+    criteria: { type: 'streak_days', threshold: 30 },
+  },
 ]
 
 // ---------------------------------------------------------------------------
@@ -107,7 +146,7 @@ function bigSub(a: string, b: string): string {
 }
 
 function bigMulRatio(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000)) / 1_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000))) / 1_000_000n).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -120,7 +159,10 @@ export class A2AReward {
   private achievements: Achievement[]
   private agentAchievements: Map<string, Set<string>>
   private redemptionOptions: Map<string, RedemptionOption>
-  private agentStats: Map<string, { transactions: number; referrals: number; streakDays: number; lastActive: number }>
+  private agentStats: Map<
+    string,
+    { transactions: number; referrals: number; streakDays: number; lastActive: number }
+  >
   private pointsPerTransaction: string
   private referralBonus: string
   private milestoneBonus: string
@@ -190,7 +232,12 @@ export class A2AReward {
     const stats = this.getOrCreateStats(agentId)
     stats.referrals++
 
-    return this.earnPoints(agentId, this.referralBonus, 'referral', `推荐 Agent: ${referredAgentId}`)
+    return this.earnPoints(
+      agentId,
+      this.referralBonus,
+      'referral',
+      `推荐 Agent: ${referredAgentId}`,
+    )
   }
 
   /** 达里程碑（交易量/积分）时发放奖励 */
@@ -260,7 +307,7 @@ export class A2AReward {
   // =========================================================================
 
   registerAchievement(achievement: Achievement): void {
-    const idx = this.achievements.findIndex(a => a.id === achievement.id)
+    const idx = this.achievements.findIndex((a) => a.id === achievement.id)
     if (idx >= 0) {
       this.achievements[idx] = achievement
     } else {
@@ -309,7 +356,7 @@ export class A2AReward {
 
   getAgentAchievements(agentId: string): Achievement[] {
     const unlocked = this.agentAchievements.get(agentId) ?? new Set()
-    return this.achievements.filter(a => unlocked.has(a.id))
+    return this.achievements.filter((a) => unlocked.has(a.id))
   }
 
   getAllAchievements(): Achievement[] {
@@ -348,7 +395,7 @@ export class A2AReward {
 
   getRedemptionOptions(activeOnly: boolean = true): RedemptionOption[] {
     const all = [...this.redemptionOptions.values()]
-    return activeOnly ? all.filter(o => o.active) : all
+    return activeOnly ? all.filter((o) => o.active) : all
   }
 
   // =========================================================================
@@ -401,9 +448,10 @@ export class A2AReward {
     stats.lastActive = now
 
     // Streak bonus: extra points for long streaks
-    const bonus = stats.streakDays >= 7
-      ? bigMulRatio(this.pointsPerTransaction, 0.5 * Math.min(stats.streakDays / 7, 10))
-      : '0'
+    const bonus =
+      stats.streakDays >= 7
+        ? bigMulRatio(this.pointsPerTransaction, 0.5 * Math.min(stats.streakDays / 7, 10))
+        : '0'
 
     if (BigInt(bonus) > 0n) {
       this.earnPoints(agentId, bonus, 'bonus', `连续活跃 ${stats.streakDays} 天奖励`)

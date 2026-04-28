@@ -49,8 +49,8 @@ export interface TaxReport {
 }
 
 export interface A2AInvoiceConfig {
-  defaultTaxRate?: number    // 默认 0.06 (6%)
-  defaultDueDays?: number    // 默认 30
+  defaultTaxRate?: number // 默认 0.06 (6%)
+  defaultDueDays?: number // 默认 30
 }
 
 // ---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ function bigSub(a: string, b: string): string {
 }
 
 function bigMulRatio(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000)) / 1_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000))) / 1_000_000n).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -105,7 +105,7 @@ export class A2AInvoice {
     const taxRate = params.taxRate ?? this.defaultTaxRate
     const dueDays = params.dueDays ?? this.defaultDueDays
 
-    const lineItems: InvoiceItem[] = params.items.map(item => {
+    const lineItems: InvoiceItem[] = params.items.map((item) => {
       const total = (BigInt(item.unitPrice) * BigInt(item.quantity)).toString()
       return { ...item, total }
     })
@@ -186,7 +186,7 @@ export class A2AInvoice {
 
   generateTaxReport(agentId: string, startDate: number, endDate: number): TaxReport {
     const invs = [...this.invoices.values()].filter(
-      inv =>
+      (inv) =>
         inv.agentId === agentId &&
         inv.status === 'paid' &&
         inv.paidAt !== null &&
@@ -212,7 +212,10 @@ export class A2AInvoice {
         report.categoryBreakdown[cat] = { count: 0, revenue: '0', tax: '0' }
       }
       report.categoryBreakdown[cat].count++
-      report.categoryBreakdown[cat].revenue = bigAdd(report.categoryBreakdown[cat].revenue, inv.subtotal)
+      report.categoryBreakdown[cat].revenue = bigAdd(
+        report.categoryBreakdown[cat].revenue,
+        inv.subtotal,
+      )
       report.categoryBreakdown[cat].tax = bigAdd(report.categoryBreakdown[cat].tax, inv.tax)
     }
 
@@ -229,21 +232,18 @@ export class A2AInvoice {
 
   getAgentInvoices(agentId: string, status?: InvoiceStatus): Invoice[] {
     const all = [...this.invoices.values()].filter(
-      inv => inv.agentId === agentId || inv.counterpartyId === agentId,
+      (inv) => inv.agentId === agentId || inv.counterpartyId === agentId,
     )
-    return status ? all.filter(inv => inv.status === status) : all
+    return status ? all.filter((inv) => inv.status === status) : all
   }
 
   getOverdueInvoices(agentId?: string): Invoice[] {
-    const overdue = [...this.invoices.values()].filter(inv => inv.status === 'overdue')
-    return agentId ? overdue.filter(inv => inv.agentId === agentId) : overdue
+    const overdue = [...this.invoices.values()].filter((inv) => inv.status === 'overdue')
+    return agentId ? overdue.filter((inv) => inv.agentId === agentId) : overdue
   }
 
   /** 静态税费计算器 — 不需创建发票即可估算税额 */
-  static calculateTax(
-    amount: string,
-    taxRate: number = 0.06,
-  ): { tax: string; total: string } {
+  static calculateTax(amount: string, taxRate: number = 0.06): { tax: string; total: string } {
     const tax = bigMulRatio(amount, taxRate)
     const total = bigAdd(amount, tax)
     return { tax, total }

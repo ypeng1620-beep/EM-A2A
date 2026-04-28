@@ -19,13 +19,13 @@ export type CredentialStatus = 'active' | 'expired' | 'revoked'
 export interface SBTCredential {
   id: string
   type: QualificationType
-  issuer: string           // 认证机构 DID
-  holder: string           // Agent DID
+  issuer: string // 认证机构 DID
+  holder: string // Agent DID
   issuedAt: number
   expiresAt: number
   status: CredentialStatus
   metadata: Record<string, unknown>
-  tokenId?: string         // 链上 SBT token ID
+  tokenId?: string // 链上 SBT token ID
   txHash?: string
 }
 

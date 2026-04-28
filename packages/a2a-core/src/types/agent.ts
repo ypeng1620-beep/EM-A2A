@@ -41,7 +41,7 @@ export type AgentCategory =
 
 export interface CreditScore {
   did: AgentDID
-  score: number           // 300-950
+  score: number // 300-950
   level: CreditLevel
   updatedAt: number
   factors: CreditFactors

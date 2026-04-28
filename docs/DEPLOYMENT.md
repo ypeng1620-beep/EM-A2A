@@ -3,6 +3,7 @@
 ## 概览
 
 EM-A2A 由两部分组成：
+
 1. **Solidity 智能合约** — 4 个合约部署到 TRON 网络
 2. **TypeScript 产品包** — 10 个 npm 包，可部署到任意 Node.js 环境
 
@@ -10,12 +11,12 @@ EM-A2A 由两部分组成：
 
 ## 环境要求
 
-| 工具 | 版本 | 用途 |
-|------|------|------|
-| Node.js | ≥ 22.14.0 | 运行时 |
-| pnpm | ≥ 9.x | 包管理 |
-| Hardhat | 2.22+ | 合约编译/部署 |
-| TRON 钱包 | — | 部署账户 (需充足 TRX) |
+| 工具      | 版本      | 用途                  |
+| --------- | --------- | --------------------- |
+| Node.js   | ≥ 22.14.0 | 运行时                |
+| pnpm      | ≥ 9.x     | 包管理                |
+| Hardhat   | 2.22+     | 合约编译/部署         |
+| TRON 钱包 | —         | 部署账户 (需充足 TRX) |
 
 ---
 
@@ -52,6 +53,7 @@ pnpm contracts:deploy:shasta
 部署完成后输出合约地址，记录到 `contracts/deployments/shasta.json`。
 
 将输出的合约地址填入 `.env`:
+
 ```
 CONTRACT_AGENT_REGISTRY=Txxxxxxxxxxxxx
 CONTRACT_REVENUE_SPLITTER=Txxxxxxxxxxxxx
@@ -68,6 +70,7 @@ pnpm contracts:verify:shasta
 ### 1.5 TRON 主网部署
 
 **前置条件:**
+
 - [ ] 合约已通过安全审计
 - [ ] Shasta 测试网全部验证通过
 - [ ] 部署账户有至少 500 TRX (含 gas 预留)
@@ -80,6 +83,7 @@ pnpm contracts:deploy:mainnet
 ```
 
 **部署后步骤:**
+
 1. 验证部署记录: `contracts/deployments/mainnet.json`
 2. 更新 `.env` 中 `CONTRACT_*` 地址
 3. 执行合约验证: `pnpm contracts:verify:mainnet`
@@ -88,15 +92,15 @@ pnpm contracts:deploy:mainnet
 
 ### 1.6 合约地址 (可查询)
 
-| 网络 | 合约 | 地址 |
-|------|------|------|
-| Shasta | AgentRegistry | 部署后填入 |
-| Shasta | RevenueSplitter | 部署后填入 |
-| Shasta | EscrowService | 部署后填入 |
-| Shasta | MicroPaymentChannel | 部署后填入 |
-| Mainnet | AgentRegistry | 部署后填入 |
-| Mainnet | RevenueSplitter | 部署后填入 |
-| Mainnet | EscrowService | 部署后填入 |
+| 网络    | 合约                | 地址       |
+| ------- | ------------------- | ---------- |
+| Shasta  | AgentRegistry       | 部署后填入 |
+| Shasta  | RevenueSplitter     | 部署后填入 |
+| Shasta  | EscrowService       | 部署后填入 |
+| Shasta  | MicroPaymentChannel | 部署后填入 |
+| Mainnet | AgentRegistry       | 部署后填入 |
+| Mainnet | RevenueSplitter     | 部署后填入 |
+| Mainnet | EscrowService       | 部署后填入 |
 | Mainnet | MicroPaymentChannel | 部署后填入 |
 
 ---
@@ -127,10 +131,10 @@ pnpm -r publish --access public
 
 GitHub Actions 工作流:
 
-| 工作流 | 触发条件 | 内容 |
-|--------|----------|------|
-| `ci.yml` | PR → main, push main | lint, build, test, contracts compile, contracts test |
-| `release.yml` | tag `v*` | build, test, npm publish, GitHub release |
+| 工作流        | 触发条件             | 内容                                                 |
+| ------------- | -------------------- | ---------------------------------------------------- |
+| `ci.yml`      | PR → main, push main | lint, build, test, contracts compile, contracts test |
+| `release.yml` | tag `v*`             | build, test, npm publish, GitHub release             |
 
 ---
 
@@ -203,6 +207,7 @@ tsx cli/index.ts health
 ### 4.3 升级
 
 合约升级策略:
+
 1. 当前合约不可升级 (非代理模式) — 如需升级需部署新合约并迁移状态
 2. 未来版本迁移到 UUPS 代理模式
 3. RevenueSplitter 产品参数可通过 `updateProduct` 调整 (owner only)
@@ -210,6 +215,7 @@ tsx cli/index.ts health
 ### 4.4 回滚
 
 如果主网部署有问题:
+
 1. 如未超过 24h 且无用户交互 → 重新部署新合约，更新 `.env` 地址
 2. 如有用户交互 → 部署修复合约，创建迁移脚本转移状态
 
@@ -233,10 +239,10 @@ tsx cli/index.ts health
 
 ## 六、故障排查
 
-| 问题 | 解决方案 |
-|------|----------|
-| `HardhatError: HH22` (网络不通) | 确保 hardhat 本地安装: `cd contracts && pnpm install` |
-| 部署 gas 不足 | 增加钱包 TRX 余额或降低 `gasPrice` |
-| 验证失败 `Contract source code already verified` | 合约已验证，跳过 |
-| Shasta 水龙头不够 | 访问 https://www.trongrid.io/shasta 领取测试币 |
-| `TronWeb is not available` | 产品运行在无链环境中，不影响业务逻辑测试 |
+| 问题                                             | 解决方案                                              |
+| ------------------------------------------------ | ----------------------------------------------------- |
+| `HardhatError: HH22` (网络不通)                  | 确保 hardhat 本地安装: `cd contracts && pnpm install` |
+| 部署 gas 不足                                    | 增加钱包 TRX 余额或降低 `gasPrice`                    |
+| 验证失败 `Contract source code already verified` | 合约已验证，跳过                                      |
+| Shasta 水龙头不够                                | 访问 https://www.trongrid.io/shasta 领取测试币        |
+| `TronWeb is not available`                       | 产品运行在无链环境中，不影响业务逻辑测试              |

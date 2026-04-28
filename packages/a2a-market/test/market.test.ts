@@ -4,16 +4,59 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 // Mock: better-sqlite3 — simple in-memory store
 // ---------------------------------------------------------------------------
 
-interface FakeRow { [key: string]: unknown }
+interface FakeRow {
+  [key: string]: unknown
+}
 
 function createFakeDB() {
   const tables = new Map<string, { columns: string[]; rows: FakeRow[] }>()
 
   // Pre-declare known columns so insert doesn't depend on parsing CREATE TABLE
   const knownColumns: Record<string, string[]> = {
-    listings: ['id', 'agent_id', 'name', 'description', 'category', 'type', 'price', 'currency', 'turnaround', 'credentials', 'rating', 'review_count', 'success_rate', 'active', 'created_at', 'updated_at'],
-    orders: ['id', 'listing_id', 'buyer_id', 'seller_id', 'amount', 'fee', 'fee_rate', 'status', 'escrow_tx_hash', 'release_tx_hash', 'created_at', 'deadline', 'requirements', 'deliverables'],
-    reviews: ['id', 'order_id', 'reviewer_id', 'subject_id', 'rating', 'comment', 'tx_hash', 'created_at'],
+    listings: [
+      'id',
+      'agent_id',
+      'name',
+      'description',
+      'category',
+      'type',
+      'price',
+      'currency',
+      'turnaround',
+      'credentials',
+      'rating',
+      'review_count',
+      'success_rate',
+      'active',
+      'created_at',
+      'updated_at',
+    ],
+    orders: [
+      'id',
+      'listing_id',
+      'buyer_id',
+      'seller_id',
+      'amount',
+      'fee',
+      'fee_rate',
+      'status',
+      'escrow_tx_hash',
+      'release_tx_hash',
+      'created_at',
+      'deadline',
+      'requirements',
+      'deliverables',
+    ],
+    reviews: [
+      'id',
+      'order_id',
+      'reviewer_id',
+      'subject_id',
+      'rating',
+      'comment',
+      'tx_hash',
+      'created_at',
+    ],
   }
 
   // Ensure tables exist
@@ -36,7 +79,9 @@ function createFakeDB() {
             const t = tables.get(insM[1])
             if (t) {
               const row: FakeRow = {}
-              t.columns.forEach((col, i) => { row[col] = params[i] ?? null })
+              t.columns.forEach((col, i) => {
+                row[col] = params[i] ?? null
+              })
               t.rows.push(row)
               return { changes: 1 }
             }
@@ -47,7 +92,12 @@ function createFakeDB() {
             const t = tables.get(updM[1])
             if (!t) return { changes: 0 }
             // Parse SET col = ?, col = ?, ...
-            const setParts = updM[2].split(',').map(s => s.trim().split(/\s*=\s*\?/)[0].trim())
+            const setParts = updM[2].split(',').map((s) =>
+              s
+                .trim()
+                .split(/\s*=\s*\?/)[0]
+                .trim(),
+            )
             // The WHERE param is the last one
             const whereVal = params[params.length - 1]
             let changes = 0
@@ -75,7 +125,7 @@ function createFakeDB() {
             if (!t) return undefined
             const whereCol = selM[2].replace(/\s*=\s*\?/, '').trim()
             const whereVal = String(params[0] ?? '')
-            return t.rows.find(r => String(r[whereCol] ?? '') === whereVal)
+            return t.rows.find((r) => String(r[whereCol] ?? '') === whereVal)
           }
           // SELECT COUNT(*) as count FROM table WHERE ...
           const countM = trimmed.match(/^SELECT\s+COUNT\(\*\)\s+as\s+count\s+FROM\s+(\w+)/i)
@@ -85,7 +135,13 @@ function createFakeDB() {
             if (whereM && t) {
               const col = whereM[1]
               const val = String(params[0] ?? '')
-              return { count: t.rows.filter(r => String(r[col] === val) || params[0] === 1 ? r[col] === params[0] || r[col] === 1 : true).length }
+              return {
+                count: t.rows.filter((r) =>
+                  String(r[col] === val) || params[0] === 1
+                    ? r[col] === params[0] || r[col] === 1
+                    : true,
+                ).length,
+              }
             }
             return { count: t ? t.rows.length : 0 }
           }
@@ -109,12 +165,18 @@ function createFakeDB() {
             // Handle parenthesized OR: (name LIKE ? OR description LIKE ?)
             const orM = whereClause.match(/\((\w+)\s+LIKE\s+\?\s+OR\s+(\w+)\s+LIKE\s+\?\)/i)
             if (orM) {
-              const col1 = orM[1], col2 = orM[2]
+              const col1 = orM[1],
+                col2 = orM[2]
               const p1 = String(params.shift() ?? '').replace(/%/g, '')
               const p2 = String(params.shift() ?? '').replace(/%/g, '')
-              rows = rows.filter(r =>
-                String(r[col1] ?? '').toLowerCase().includes(p1.toLowerCase()) ||
-                String(r[col2] ?? '').toLowerCase().includes(p2.toLowerCase())
+              rows = rows.filter(
+                (r) =>
+                  String(r[col1] ?? '')
+                    .toLowerCase()
+                    .includes(p1.toLowerCase()) ||
+                  String(r[col2] ?? '')
+                    .toLowerCase()
+                    .includes(p2.toLowerCase()),
               )
             }
 
@@ -128,7 +190,7 @@ function createFakeDB() {
               if (eqM) {
                 const col = eqM[1]
                 const val = String(params.shift() ?? '')
-                rows = rows.filter(r => String(r[col] ?? '') === val)
+                rows = rows.filter((r) => String(r[col] ?? '') === val)
                 continue
               }
               // col = literal (e.g. active = 1)
@@ -136,7 +198,7 @@ function createFakeDB() {
               if (eqLitM) {
                 const col = eqLitM[1]
                 const val = parseInt(eqLitM[2])
-                rows = rows.filter(r => r[col] === val)
+                rows = rows.filter((r) => r[col] === val)
                 continue
               }
               // col >= ?
@@ -144,7 +206,7 @@ function createFakeDB() {
               if (gteM) {
                 const col = gteM[1]
                 const val = Number(params.shift())
-                rows = rows.filter(r => Number(r[col] ?? 0) >= val)
+                rows = rows.filter((r) => Number(r[col] ?? 0) >= val)
                 continue
               }
               // col LIKE ?
@@ -152,7 +214,11 @@ function createFakeDB() {
               if (likeM) {
                 const col = likeM[1]
                 const pattern = String(params.shift() ?? '').replace(/%/g, '')
-                rows = rows.filter(r => String(r[col] ?? '').toLowerCase().includes(pattern.toLowerCase()))
+                rows = rows.filter((r) =>
+                  String(r[col] ?? '')
+                    .toLowerCase()
+                    .includes(pattern.toLowerCase()),
+                )
                 continue
               }
             }
@@ -164,7 +230,8 @@ function createFakeDB() {
             const col = orderM[1]
             const dir = orderM[2] === 'ASC' ? 1 : -1
             rows.sort((a, b) => {
-              const av = a[col] ?? 0, bv = b[col] ?? 0
+              const av = a[col] ?? 0,
+                bv = b[col] ?? 0
               return (av < bv ? -1 : av > bv ? 1 : 0) * dir
             })
           }
@@ -202,7 +269,9 @@ vi.mock('@em/a2a-core', () => ({
       disconnect: vi.fn(),
       isConnected: vi.fn().mockReturnValue(true),
       registerAgent: vi.fn().mockResolvedValue({ txHash: '0xreg' }),
-      resolveDID: vi.fn().mockResolvedValue({ owner: 'addr', metadata: {}, registeredAt: 1, active: true }),
+      resolveDID: vi
+        .fn()
+        .mockResolvedValue({ owner: 'addr', metadata: {}, registeredAt: 1, active: true }),
       issueCredential: vi.fn().mockResolvedValue({ txHash: '0xcred' }),
       revokeCredential: vi.fn().mockResolvedValue({ txHash: '0xrevoke' }),
       getCredentials: vi.fn().mockResolvedValue([]),
@@ -283,26 +352,98 @@ describe('A2AMarket', () => {
     })
 
     it('should list agent listings', () => {
-      market.createListing({ agentId: 'did:bai:tron:agent1', name: 'S1', description: '', category: 'creative', type: 'service', price: '1000000', currency: 'USDC', turnaround: 3600 })
-      market.createListing({ agentId: 'did:bai:tron:agent1', name: 'S2', description: '', category: 'technical', type: 'api', price: '2000000', currency: 'USDT', turnaround: 7200 })
-      market.createListing({ agentId: 'did:bai:tron:agent2', name: 'S3', description: '', category: 'creative', type: 'service', price: '1000000', currency: 'USDC', turnaround: 3600 })
+      market.createListing({
+        agentId: 'did:bai:tron:agent1',
+        name: 'S1',
+        description: '',
+        category: 'creative',
+        type: 'service',
+        price: '1000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
+      market.createListing({
+        agentId: 'did:bai:tron:agent1',
+        name: 'S2',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '2000000',
+        currency: 'USDT',
+        turnaround: 7200,
+      })
+      market.createListing({
+        agentId: 'did:bai:tron:agent2',
+        name: 'S3',
+        description: '',
+        category: 'creative',
+        type: 'service',
+        price: '1000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
 
       const agentListings = market.getAgentListings('did:bai:tron:agent1')
       expect(agentListings.length).toBe(2)
     })
 
     it('should search by category', () => {
-      market.createListing({ agentId: 'did:a', name: 'Creative work', description: 'desc', category: 'creative', type: 'service', price: '1000000', currency: 'USDC', turnaround: 3600 })
-      market.createListing({ agentId: 'did:b', name: 'Tech work', description: 'desc', category: 'technical', type: 'api', price: '2000000', currency: 'USDC', turnaround: 3600 })
-      market.createListing({ agentId: 'did:c', name: 'More creative', description: 'desc', category: 'creative', type: 'service', price: '3000000', currency: 'USDC', turnaround: 3600 })
+      market.createListing({
+        agentId: 'did:a',
+        name: 'Creative work',
+        description: 'desc',
+        category: 'creative',
+        type: 'service',
+        price: '1000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
+      market.createListing({
+        agentId: 'did:b',
+        name: 'Tech work',
+        description: 'desc',
+        category: 'technical',
+        type: 'api',
+        price: '2000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
+      market.createListing({
+        agentId: 'did:c',
+        name: 'More creative',
+        description: 'desc',
+        category: 'creative',
+        type: 'service',
+        price: '3000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
 
       const results = market.searchListings({ category: 'creative' })
       expect(results.length).toBe(2)
     })
 
     it('should search by query text', () => {
-      market.createListing({ agentId: 'did:a', name: 'Logo Design', description: 'cool logos', category: 'creative', type: 'service', price: '1000000', currency: 'USDC', turnaround: 3600 })
-      market.createListing({ agentId: 'did:b', name: 'Smart Contract Audit', description: 'security', category: 'technical', type: 'api', price: '5000000', currency: 'USDC', turnaround: 3600 })
+      market.createListing({
+        agentId: 'did:a',
+        name: 'Logo Design',
+        description: 'cool logos',
+        category: 'creative',
+        type: 'service',
+        price: '1000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
+      market.createListing({
+        agentId: 'did:b',
+        name: 'Smart Contract Audit',
+        description: 'security',
+        category: 'technical',
+        type: 'api',
+        price: '5000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
 
       const r = market.searchListings({ query: 'logo' })
       expect(r.length).toBe(1)
@@ -310,7 +451,16 @@ describe('A2AMarket', () => {
     })
 
     it('should search by min rating', () => {
-      market.createListing({ agentId: 'did:a', name: 'S1', description: '', category: 'creative', type: 'service', price: '1000000', currency: 'USDC', turnaround: 3600 })
+      market.createListing({
+        agentId: 'did:a',
+        name: 'S1',
+        description: '',
+        category: 'creative',
+        type: 'service',
+        price: '1000000',
+        currency: 'USDC',
+        turnaround: 3600,
+      })
 
       const all = market.searchListings({})
       expect(all.length).toBe(1)
@@ -323,11 +473,22 @@ describe('A2AMarket', () => {
     it('should create an order', () => {
       const listing = market.createListing({
         agentId: 'did:bai:tron:seller',
-        name: 'Service', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        name: 'Service',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
 
-      const order = market.createOrder(listing.id, 'did:bai:tron:buyer', 'did:bai:tron:seller', '10000000', Date.now() + 86400000)
+      const order = market.createOrder(
+        listing.id,
+        'did:bai:tron:buyer',
+        'did:bai:tron:seller',
+        '10000000',
+        Date.now() + 86400000,
+      )
       expect(order.id).toMatch(/^order_/)
       expect(order.status).toBe('created')
       expect(order.feeRate).toBe(0.01)
@@ -335,10 +496,22 @@ describe('A2AMarket', () => {
 
     it('should update order status', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'Svc', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'Svc',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
-      const order = market.createOrder(listing.id, 'did:buyer', 'did:seller', '10000000', Date.now() + 86400000)
+      const order = market.createOrder(
+        listing.id,
+        'did:buyer',
+        'did:seller',
+        '10000000',
+        Date.now() + 86400000,
+      )
 
       const ok = market.updateOrderStatus(order.id, 'funded', '0xescrow_tx')
       expect(ok).toBe(true)
@@ -355,8 +528,14 @@ describe('A2AMarket', () => {
 
     it('should list orders by buyer', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'Svc', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'Svc',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
       market.createOrder(listing.id, 'did:buyer1', 'did:seller', '10000000', Date.now() + 86400000)
       market.createOrder(listing.id, 'did:buyer2', 'did:seller', '10000000', Date.now() + 86400000)
@@ -370,10 +549,22 @@ describe('A2AMarket', () => {
 
     it('should update order to accepted with release tx hash', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'S', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'S',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
-      const order = market.createOrder(listing.id, 'did:buyer', 'did:seller', '10000000', Date.now() + 86400000)
+      const order = market.createOrder(
+        listing.id,
+        'did:buyer',
+        'did:seller',
+        '10000000',
+        Date.now() + 86400000,
+      )
 
       market.updateOrderStatus(order.id, 'accepted', '0xrelease')
       const updated = market.getOrder(order.id)
@@ -385,10 +576,22 @@ describe('A2AMarket', () => {
   describe('Reviews', () => {
     it('should create a review for a completed order', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'Svc', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'Svc',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
-      const order = market.createOrder(listing.id, 'did:buyer', 'did:seller', '10000000', Date.now() + 86400000)
+      const order = market.createOrder(
+        listing.id,
+        'did:buyer',
+        'did:seller',
+        '10000000',
+        Date.now() + 86400000,
+      )
       market.updateOrderStatus(order.id, 'accepted')
 
       const review = market.createReview(order.id, 'did:buyer', 'did:seller', 5, 'Excellent work!')
@@ -399,23 +602,49 @@ describe('A2AMarket', () => {
 
     it('should reject review for non-completed order', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'Svc', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'Svc',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
-      const order = market.createOrder(listing.id, 'did:buyer', 'did:seller', '10000000', Date.now() + 86400000)
+      const order = market.createOrder(
+        listing.id,
+        'did:buyer',
+        'did:seller',
+        '10000000',
+        Date.now() + 86400000,
+      )
       // order still 'created', not 'accepted'
 
-      expect(() => market.createReview(order.id, 'did:buyer', 'did:seller', 5, 'Good')).toThrow('Order not completed')
+      expect(() => market.createReview(order.id, 'did:buyer', 'did:seller', 5, 'Good')).toThrow(
+        'Order not completed',
+      )
     })
 
     it('should update listing rating after reviews', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'Svc', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'Svc',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
 
       for (let i = 0; i < 2; i++) {
-        const order = market.createOrder(listing.id, `did:buyer${i}`, 'did:seller', '10000000', Date.now() + 86400000)
+        const order = market.createOrder(
+          listing.id,
+          `did:buyer${i}`,
+          'did:seller',
+          '10000000',
+          Date.now() + 86400000,
+        )
         market.updateOrderStatus(order.id, 'accepted')
         market.createReview(order.id, `did:buyer${i}`, 'did:seller', i === 0 ? 5 : 3, 'review')
       }
@@ -425,15 +654,23 @@ describe('A2AMarket', () => {
     })
 
     it('should throw on review for non-existent order', () => {
-      expect(() => market.createReview('order_fake', 'did:buyer', 'did:seller', 3, 'Bad')).toThrow('Order not found')
+      expect(() => market.createReview('order_fake', 'did:buyer', 'did:seller', 3, 'Bad')).toThrow(
+        'Order not found',
+      )
     })
   })
 
   describe('Stats', () => {
     it('should return aggregate stats', () => {
       const listing = market.createListing({
-        agentId: 'did:seller', name: 'S', description: '', category: 'technical', type: 'api',
-        price: '10000000', currency: 'USDC', turnaround: 3600,
+        agentId: 'did:seller',
+        name: 'S',
+        description: '',
+        category: 'technical',
+        type: 'api',
+        price: '10000000',
+        currency: 'USDC',
+        turnaround: 3600,
       })
       market.createOrder(listing.id, 'did:buyer', 'did:seller', '10000000', Date.now() + 86400000)
 

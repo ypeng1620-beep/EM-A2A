@@ -35,7 +35,7 @@ export class AuditTrail {
 
   anchorToChain(): string {
     // 将所有未锚定的条目哈希组合 → 上链
-    const unanchored = this.entries.filter(e => !e.txHash)
+    const unanchored = this.entries.filter((e) => !e.txHash)
     if (unanchored.length === 0) return ''
 
     const hash = this.computeHash(JSON.stringify(unanchored))
@@ -52,16 +52,14 @@ export class AuditTrail {
   query(did?: AgentDID, productId?: string, limit = 100): AuditEntry[] {
     let results = this.entries
 
-    if (did) results = results.filter(e => e.agentDID === did)
-    if (productId) results = results.filter(e => e.productId === productId)
+    if (did) results = results.filter((e) => e.agentDID === did)
+    if (productId) results = results.filter((e) => e.productId === productId)
 
     return results.slice(-limit)
   }
 
   generateReport(start: number, end: number): AuditReport {
-    const periodEntries = this.entries.filter(
-      e => e.timestamp >= start && e.timestamp <= end,
-    )
+    const periodEntries = this.entries.filter((e) => e.timestamp >= start && e.timestamp <= end)
 
     let totalVolume = 0n
     let totalFees = 0n
@@ -76,7 +74,7 @@ export class AuditTrail {
       totalTransactions: periodEntries.length,
       totalVolume: totalVolume.toString(),
       totalFees: totalFees.toString(),
-      flaggedTransactions: periodEntries.filter(e => e.data.flagged === true).length,
+      flaggedTransactions: periodEntries.filter((e) => e.data.flagged === true).length,
       complianceScore: this.calculateComplianceScore(periodEntries),
       entries: periodEntries,
     }
@@ -84,7 +82,7 @@ export class AuditTrail {
 
   private calculateComplianceScore(entries: AuditEntry[]): number {
     if (entries.length === 0) return 100
-    const flagged = entries.filter(e => e.data.flagged === true).length
+    const flagged = entries.filter((e) => e.data.flagged === true).length
     return Math.round(100 - (flagged / entries.length) * 100)
   }
 
@@ -93,7 +91,7 @@ export class AuditTrail {
     let hash = 0
     for (let i = 0; i < data.length; i++) {
       const char = data.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash |= 0
     }
     return hash.toString(16).padStart(8, '0')

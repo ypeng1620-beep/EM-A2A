@@ -98,7 +98,11 @@ async function main() {
 
   step(3, 'Agent S — issues credentials (mocked on-chain SBT)')
   const credentials = [
-    { type: 'qualification', id: 'Q-' + randomUUID().slice(0, 8), desc: 'Smart Contract Auditor L2' },
+    {
+      type: 'qualification',
+      id: 'Q-' + randomUUID().slice(0, 8),
+      desc: 'Smart Contract Auditor L2',
+    },
     { type: 'certification', id: 'C-' + randomUUID().slice(0, 8), desc: 'Solidity Expert' },
     { type: 'license', id: 'L-' + randomUUID().slice(0, 8), desc: 'TRON Ecosystem Partner' },
   ]
@@ -127,7 +131,8 @@ async function main() {
     id: 'listing_' + randomUUID().slice(0, 8),
     agentId: sellerDID,
     name: 'Smart Contract Audit',
-    description: 'Comprehensive security audit for Solidity contracts — reentrancy, overflow, access control',
+    description:
+      'Comprehensive security audit for Solidity contracts — reentrancy, overflow, access control',
     category: 'technical',
     type: 'service',
     price: '500000000', // 500 USDC (6 decimals)
@@ -234,17 +239,23 @@ async function main() {
   const buyerScore = creditB.calculateScore(buyerDID)
 
   info('Agent S credit', `${sellerScore.score} (${sellerScore.level})`)
-  info('Agent S factors', JSON.stringify({
-    txVolume: sellerScore.factors.transactionVolume,
-    completionRate: (sellerScore.factors.completionRate * 100).toFixed(0) + '%',
-    disputeRate: (sellerScore.factors.disputeRate * 100).toFixed(0) + '%',
-  }))
+  info(
+    'Agent S factors',
+    JSON.stringify({
+      txVolume: sellerScore.factors.transactionVolume,
+      completionRate: (sellerScore.factors.completionRate * 100).toFixed(0) + '%',
+      disputeRate: (sellerScore.factors.disputeRate * 100).toFixed(0) + '%',
+    }),
+  )
 
   info('Agent B credit', `${buyerScore.score} (${buyerScore.level})`)
-  info('Agent B factors', JSON.stringify({
-    txVolume: buyerScore.factors.transactionVolume,
-    completionRate: (buyerScore.factors.completionRate * 100).toFixed(0) + '%',
-  }))
+  info(
+    'Agent B factors',
+    JSON.stringify({
+      txVolume: buyerScore.factors.transactionVolume,
+      completionRate: (buyerScore.factors.completionRate * 100).toFixed(0) + '%',
+    }),
+  )
 
   // -----------------------------------------------------------------------
   // Phase 6: Variable Float Revenue (high-credit discount)
@@ -254,12 +265,18 @@ async function main() {
   step(16, 'Switch to variable float mode — high credit = lower fees')
   revenue.setMode('variable_float')
 
-  const lowCreditFee = (new VariableFloatRevenue()).calculateFee('100000000', 50, 350)
-  const highCreditFee = (new VariableFloatRevenue()).calculateFee('100000000', 50, sellerScore.score)
+  const lowCreditFee = new VariableFloatRevenue().calculateFee('100000000', 50, 350)
+  const highCreditFee = new VariableFloatRevenue().calculateFee('100000000', 50, sellerScore.score)
 
   info('Low credit (350)', `${(Number(lowCreditFee.rate) * 100).toFixed(2)}% fee`)
-  info('High credit (' + sellerScore.score + ')', `${(Number(highCreditFee.rate) * 100).toFixed(2)}% fee`)
-  info('Savings', `${((Number(lowCreditFee.rate) - Number(highCreditFee.rate)) * 100).toFixed(2)}% rate reduction`)
+  info(
+    'High credit (' + sellerScore.score + ')',
+    `${(Number(highCreditFee.rate) * 100).toFixed(2)}% fee`,
+  )
+  info(
+    'Savings',
+    `${((Number(lowCreditFee.rate) - Number(highCreditFee.rate)) * 100).toFixed(2)}% rate reduction`,
+  )
 
   // -----------------------------------------------------------------------
   // Phase 7: Credit Trends
@@ -280,7 +297,9 @@ async function main() {
   console.log('    ├──────┼─────────────────────────────────────────┼───────┼───────────┤')
   top.forEach((agent, i) => {
     const did = agent.did.slice(-37).padEnd(37)
-    console.log(`    │  ${i + 1}   │ ${did} │ ${String(agent.score).padEnd(5)} │ ${agent.level.padEnd(9)} │`)
+    console.log(
+      `    │  ${i + 1}   │ ${did} │ ${String(agent.score).padEnd(5)} │ ${agent.level.padEnd(9)} │`,
+    )
   })
   console.log('    └──────┴─────────────────────────────────────────┴───────┴───────────┘')
 
@@ -344,7 +363,7 @@ async function main() {
   creditB.close()
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Demo failed:', err)
   process.exit(1)
 })

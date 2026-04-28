@@ -13,13 +13,7 @@ import { randomUUID } from 'crypto'
 // Types
 // ---------------------------------------------------------------------------
 
-export type LoanStatus =
-  | 'applied'
-  | 'funded'
-  | 'active'
-  | 'repaid'
-  | 'defaulted'
-  | 'liquidated'
+export type LoanStatus = 'applied' | 'funded' | 'active' | 'repaid' | 'defaulted' | 'liquidated'
 
 export interface LoanApplication {
   agentId: string
@@ -71,7 +65,7 @@ function creditToRate(score: number): number {
   if (score >= 750) return 0.08
   if (score >= 600) return 0.12
   if (score >= 450) return 0.16
-  return 0.20
+  return 0.2
 }
 
 // ---------------------------------------------------------------------------
@@ -88,7 +82,7 @@ function bigSub(a: string, b: string): string {
 }
 
 function bigMulRatio(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000)) / 1_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000))) / 1_000_000n).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -106,7 +100,7 @@ export class A2ALend {
   constructor(config: A2ALendConfig = {}) {
     this.loans = new Map()
     this.repayments = new Map()
-    this.minLoan = config.minLoan ?? '10000000'   // 10 USDC
+    this.minLoan = config.minLoan ?? '10000000' // 10 USDC
     this.maxLoan = config.maxLoan ?? '100000000000' // 100,000 USDC
     this.defaultTermDays = config.defaultTermDays ?? 30
     this.liquidationPenalty = config.liquidationPenalty ?? 0.01
@@ -128,7 +122,7 @@ export class A2ALend {
     }
 
     const interestRate = creditToRate(app.creditScore)
-    const interest = bigMulRatio(app.amount, interestRate * app.termDays / 365)
+    const interest = bigMulRatio(app.amount, (interestRate * app.termDays) / 365)
     const totalOwed = bigAdd(app.amount, interest)
 
     const loan: Loan = {
@@ -247,8 +241,8 @@ export class A2ALend {
   }
 
   getAgentLoans(agentId: string, status?: LoanStatus): Loan[] {
-    const all = [...this.loans.values()].filter(l => l.agentId === agentId)
-    return status ? all.filter(l => l.status === status) : all
+    const all = [...this.loans.values()].filter((l) => l.agentId === agentId)
+    return status ? all.filter((l) => l.status === status) : all
   }
 
   getRepayments(loanId: string): Repayment[] {
@@ -256,13 +250,13 @@ export class A2ALend {
   }
 
   getActiveLoans(): Loan[] {
-    return [...this.loans.values()].filter(l => l.status === 'active')
+    return [...this.loans.values()].filter((l) => l.status === 'active')
   }
 
   getOverdueLoans(): Loan[] {
     const now = Date.now()
     return [...this.loans.values()].filter(
-      l => (l.status === 'active' || l.status === 'funded') && now > l.dueAt,
+      (l) => (l.status === 'active' || l.status === 'funded') && now > l.dueAt,
     )
   }
 

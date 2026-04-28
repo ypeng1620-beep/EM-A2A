@@ -27,7 +27,12 @@ export interface IChainAdapter {
   disconnect(): Promise<void>
 
   // —— 支付 ——
-  transferStablecoin(to: string, token: 'USDT' | 'USDC', amount: string, memo?: string): Promise<TxReceipt>
+  transferStablecoin(
+    to: string,
+    token: 'USDT' | 'USDC',
+    amount: string,
+    memo?: string,
+  ): Promise<TxReceipt>
   transferNative(to: string, amount: string): Promise<TxReceipt>
   getBalance(address: string, token?: 'USDT' | 'USDC'): Promise<string>
 
@@ -37,7 +42,10 @@ export interface IChainAdapter {
   updateAgentMetadata(did: AgentDID, metadata: Record<string, unknown>): Promise<TxReceipt>
 
   // —— SBT 凭证 ——
-  issueCredential(did: AgentDID, credential: Omit<SBTCredential, 'id' | 'holder' | 'issuedAt'>): Promise<{ credentialId: string; txHash: string }>
+  issueCredential(
+    did: AgentDID,
+    credential: Omit<SBTCredential, 'id' | 'holder' | 'issuedAt'>,
+  ): Promise<{ credentialId: string; txHash: string }>
   revokeCredential(credentialId: string, reason: string): Promise<TxReceipt>
   getCredentials(did: AgentDID): Promise<SBTCredential[]>
 
@@ -50,7 +58,12 @@ export interface IChainAdapter {
 
   // —— 合约交互 ——
   callContract(address: string, method: string, args: unknown[]): Promise<string>
-  sendTransaction(address: string, method: string, args: unknown[], value?: string): Promise<TxReceipt>
+  sendTransaction(
+    address: string,
+    method: string,
+    args: unknown[],
+    value?: string,
+  ): Promise<TxReceipt>
 
   // —— 工具 ——
   waitForConfirmation(txHash: string, blocks?: number): Promise<TxReceipt>

@@ -26,45 +26,75 @@ describe('A2ALend', () => {
 
     it('should assign 8% rate to high-credit agent (750+)', () => {
       const loan = lend.apply({
-        agentId: 'did:hq', amount: '100000000', currency: 'USDC',
-        purpose: 'expansion', termDays: 30, creditScore: 800,
+        agentId: 'did:hq',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'expansion',
+        termDays: 30,
+        creditScore: 800,
       })
       expect(loan.interestRate).toBe(0.08)
     })
 
     it('should assign 20% rate to low-credit agent (< 450)', () => {
       const loan = lend.apply({
-        agentId: 'did:lq', amount: '100000000', currency: 'USDC',
-        purpose: 'rescue', termDays: 30, creditScore: 350,
+        agentId: 'did:lq',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'rescue',
+        termDays: 30,
+        creditScore: 350,
       })
-      expect(loan.interestRate).toBe(0.20)
+      expect(loan.interestRate).toBe(0.2)
     })
 
     it('should reject amount below minimum', () => {
-      expect(() => lend.apply({
-        agentId: 'did:a', amount: '1000', currency: 'USDC',
-        purpose: 'tiny', termDays: 7, creditScore: 700,
-      })).toThrow('below minimum')
+      expect(() =>
+        lend.apply({
+          agentId: 'did:a',
+          amount: '1000',
+          currency: 'USDC',
+          purpose: 'tiny',
+          termDays: 7,
+          creditScore: 700,
+        }),
+      ).toThrow('below minimum')
     })
 
     it('should reject amount above maximum', () => {
-      expect(() => lend.apply({
-        agentId: 'did:a', amount: '999999999999', currency: 'USDC',
-        purpose: 'huge', termDays: 7, creditScore: 700,
-      })).toThrow('exceeds maximum')
+      expect(() =>
+        lend.apply({
+          agentId: 'did:a',
+          amount: '999999999999',
+          currency: 'USDC',
+          purpose: 'huge',
+          termDays: 7,
+          creditScore: 700,
+        }),
+      ).toThrow('exceeds maximum')
     })
 
     it('should reject term over 365 days', () => {
-      expect(() => lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'long', termDays: 400, creditScore: 700,
-      })).toThrow('1–365 days')
+      expect(() =>
+        lend.apply({
+          agentId: 'did:a',
+          amount: '100000000',
+          currency: 'USDC',
+          purpose: 'long',
+          termDays: 400,
+          creditScore: 700,
+        }),
+      ).toThrow('1–365 days')
     })
 
     it('should compute totalOwed = principal + interest', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'test', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'test',
+        termDays: 30,
+        creditScore: 700,
       })
       // 12% APR for 30/365 → ~0.9863%
       const principal = BigInt(loan.amount)
@@ -76,8 +106,12 @@ describe('A2ALend', () => {
   describe('Loan Lifecycle', () => {
     it('should fund an applied loan', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       const funded = lend.fund(loan.id)
       expect(funded.status).toBe('active')
@@ -86,8 +120,12 @@ describe('A2ALend', () => {
 
     it('should reject funding non-applied loan', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       // Already funded, can't fund again
@@ -96,8 +134,12 @@ describe('A2ALend', () => {
 
     it('should accept full repayment', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       const rep = lend.repay(loan.id, loan.totalOwed)
@@ -108,8 +150,12 @@ describe('A2ALend', () => {
 
     it('should accept partial repayment', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       lend.repay(loan.id, '50000000')
@@ -120,8 +166,12 @@ describe('A2ALend', () => {
 
     it('should reject overpayment beyond owed', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       lend.repay(loan.id, loan.totalOwed)
@@ -133,8 +183,12 @@ describe('A2ALend', () => {
   describe('Default & Liquidation', () => {
     it('should process overdue loans as defaulted', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 1, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 1,
+        creditScore: 700,
       })
       lend.fund(loan.id)
 
@@ -149,8 +203,12 @@ describe('A2ALend', () => {
 
     it('should liquidate a defaulted loan', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 1, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 1,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       const l = lend.getLoan(loan.id)!
@@ -163,8 +221,12 @@ describe('A2ALend', () => {
 
     it('should reject liquidation of non-defaulted loan', () => {
       const loan = lend.apply({
-        agentId: 'did:a', amount: '100000000', currency: 'USDC',
-        purpose: 'wc', termDays: 30, creditScore: 700,
+        agentId: 'did:a',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'wc',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       expect(() => lend.liquidate(loan.id)).toThrow('Only defaulted')
@@ -174,8 +236,12 @@ describe('A2ALend', () => {
   describe('Queries', () => {
     it('should return agent loans filtered by status', () => {
       const loan = lend.apply({
-        agentId: 'did:q', amount: '100000000', currency: 'USDC',
-        purpose: 'a', termDays: 30, creditScore: 700,
+        agentId: 'did:q',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'a',
+        termDays: 30,
+        creditScore: 700,
       })
       expect(lend.getAgentLoans('did:q', 'applied').length).toBe(1)
       expect(lend.getAgentLoans('did:q', 'active').length).toBe(0)
@@ -183,8 +249,12 @@ describe('A2ALend', () => {
 
     it('should return repayments for a loan', () => {
       const loan = lend.apply({
-        agentId: 'did:r', amount: '100000000', currency: 'USDC',
-        purpose: 'r', termDays: 30, creditScore: 700,
+        agentId: 'did:r',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'r',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       lend.repay(loan.id, '30000000')
@@ -194,8 +264,12 @@ describe('A2ALend', () => {
 
     it('should compute remaining balance', () => {
       const loan = lend.apply({
-        agentId: 'did:b', amount: '100000000', currency: 'USDC',
-        purpose: 'b', termDays: 30, creditScore: 700,
+        agentId: 'did:b',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'b',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(loan.id)
       lend.repay(loan.id, '40000000')
@@ -205,12 +279,20 @@ describe('A2ALend', () => {
 
     it('should return active loans', () => {
       const l1 = lend.apply({
-        agentId: 'did:c1', amount: '100000000', currency: 'USDC',
-        purpose: 'x', termDays: 30, creditScore: 700,
+        agentId: 'did:c1',
+        amount: '100000000',
+        currency: 'USDC',
+        purpose: 'x',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.apply({
-        agentId: 'did:c2', amount: '200000000', currency: 'USDC',
-        purpose: 'y', termDays: 30, creditScore: 700,
+        agentId: 'did:c2',
+        amount: '200000000',
+        currency: 'USDC',
+        purpose: 'y',
+        termDays: 30,
+        creditScore: 700,
       })
       lend.fund(l1.id)
       expect(lend.getActiveLoans().length).toBe(1)
@@ -220,7 +302,7 @@ describe('A2ALend', () => {
       expect(A2ALend.estimateRate(800)).toBe(0.08)
       expect(A2ALend.estimateRate(650)).toBe(0.12)
       expect(A2ALend.estimateRate(500)).toBe(0.16)
-      expect(A2ALend.estimateRate(350)).toBe(0.20)
+      expect(A2ALend.estimateRate(350)).toBe(0.2)
     })
 
     it('should return null for unknown loan', () => {

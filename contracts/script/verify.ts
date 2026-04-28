@@ -15,23 +15,23 @@
  *   4. 轮询验证状态
  */
 
-import { execSync } from "child_process"
-import * as fs from "fs"
-import * as path from "path"
+import { execSync } from 'child_process'
+import * as fs from 'fs'
+import * as path from 'path'
 
 // TronScan API endpoints per network
 const TRONSCAN_API: Record<string, string> = {
-  shasta: "https://api.shasta.tronscan.org",
-  nile: "https://nile.tronscan.org",
-  tron: "https://apilist.tronscanapi.com",
+  shasta: 'https://api.shasta.tronscan.org',
+  nile: 'https://nile.tronscan.org',
+  tron: 'https://apilist.tronscanapi.com',
 }
 
 interface VerifyRequest {
   contractAddress: string
   contractName: string
-  compilerVersion: string  // e.g. "v0.8.24+commit.e11b9ed9"
+  compilerVersion: string // e.g. "v0.8.24+commit.e11b9ed9"
   optimizerRuns: number
-  sourceCode: string       // Solidity source (flattened)
+  sourceCode: string // Solidity source (flattened)
   licenseType: string
   constructorArguments: string // ABI-encoded
 }
@@ -39,12 +39,14 @@ interface VerifyRequest {
 async function verifyContract(network: string, req: VerifyRequest): Promise<void> {
   const apiBase = TRONSCAN_API[network]
   if (!apiBase) {
-    throw new Error(`Unknown network: ${network}. Supported: ${Object.keys(TRONSCAN_API).join(", ")}`)
+    throw new Error(
+      `Unknown network: ${network}. Supported: ${Object.keys(TRONSCAN_API).join(', ')}`,
+    )
   }
 
   const apiKey = process.env.TRONSCAN_API_KEY
   if (!apiKey) {
-    throw new Error("TRONSCAN_API_KEY environment variable is not set")
+    throw new Error('TRONSCAN_API_KEY environment variable is not set')
   }
 
   console.log(`\nVerifying ${req.contractName} at ${req.contractAddress} on ${network}...`)
@@ -55,16 +57,16 @@ async function verifyContract(network: string, req: VerifyRequest): Promise<void
     compilerVersion: req.compilerVersion,
     optimizerRuns: req.optimizerRuns,
     sourceCode: req.sourceCode,
-    licenseType: req.licenseType || "MIT",
-    constructorArguments: req.constructorArguments || "",
-    contractType: "solidity",
+    licenseType: req.licenseType || 'MIT',
+    constructorArguments: req.constructorArguments || '',
+    contractType: 'solidity',
   }
 
   const response = await fetch(`${apiBase}/api/contract/verify`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "TRON-PRO-API-KEY": apiKey,
+      'Content-Type': 'application/json',
+      'TRON-PRO-API-KEY': apiKey,
     },
     body: JSON.stringify(body),
   })
@@ -80,29 +82,27 @@ async function verifyContract(network: string, req: VerifyRequest): Promise<void
 
 /** 读取 Solidity 源码 */
 function readSource(contractName: string): string {
-  const srcPath = path.join(__dirname, "..", "src", `${contractName}.sol`)
+  const srcPath = path.join(__dirname, '..', 'src', `${contractName}.sol`)
   if (!fs.existsSync(srcPath)) {
     throw new Error(`Source file not found: ${srcPath}`)
   }
-  return fs.readFileSync(srcPath, "utf8")
+  return fs.readFileSync(srcPath, 'utf8')
 }
 
 /** 从 Hardhat artifacts 获取编译信息 */
 function getCompilerInfo(): { version: string; optimizerRuns: number } {
-  const buildInfoPath = path.join(__dirname, "..", "artifacts", "build-info")
+  const buildInfoPath = path.join(__dirname, '..', 'artifacts', 'build-info')
   if (!fs.existsSync(buildInfoPath)) {
-    throw new Error("No build info found. Run `hardhat compile` first.")
+    throw new Error('No build info found. Run `hardhat compile` first.')
   }
 
-  const files = fs.readdirSync(buildInfoPath).filter(f => f.endsWith(".json"))
+  const files = fs.readdirSync(buildInfoPath).filter((f) => f.endsWith('.json'))
   if (files.length === 0) {
-    throw new Error("No build info JSON files found.")
+    throw new Error('No build info JSON files found.')
   }
 
-  const buildInfo = JSON.parse(
-    fs.readFileSync(path.join(buildInfoPath, files[0]), "utf8")
-  )
-  const solcVersion = buildInfo.solcLongVersion || "v0.8.24"
+  const buildInfo = JSON.parse(fs.readFileSync(path.join(buildInfoPath, files[0]), 'utf8'))
+  const solcVersion = buildInfo.solcLongVersion || 'v0.8.24'
 
   // Extract optimizer runs from buildInfo
   let optimizerRuns = 200
@@ -119,22 +119,29 @@ function getCompilerInfo(): { version: string; optimizerRuns: number } {
 }
 
 async function main() {
-  const network = process.env.HARDHAT_NETWORK || "shasta"
+  const network = process.env.HARDHAT_NETWORK || 'shasta'
   console.log(`Network: ${network}`)
 
   // Read deployment record
-  const deployPath = path.join(__dirname, "..", "deployments", `${network === "tron" ? "mainnet" : network}.json`)
+  const deployPath = path.join(
+    __dirname,
+    '..',
+    'deployments',
+    `${network === 'tron' ? 'mainnet' : network}.json`,
+  )
 
   if (!fs.existsSync(deployPath)) {
     console.log(`⚠ No deployment record at ${deployPath}`)
-    console.log("  Run deployment first, then verify.")
-    console.log("  To verify manually, set contract addresses in environment variables.")
-    console.log("\nManual usage:")
-    console.log("  CONTRACT_ADDRESS=xxx CONTRACT_NAME=AgentRegistry npx hardhat run script/verify.ts --network tron")
+    console.log('  Run deployment first, then verify.')
+    console.log('  To verify manually, set contract addresses in environment variables.')
+    console.log('\nManual usage:')
+    console.log(
+      '  CONTRACT_ADDRESS=xxx CONTRACT_NAME=AgentRegistry npx hardhat run script/verify.ts --network tron',
+    )
     return
   }
 
-  const deploy: any = JSON.parse(fs.readFileSync(deployPath, "utf8"))
+  const deploy: any = JSON.parse(fs.readFileSync(deployPath, 'utf8'))
   const compilerInfo = getCompilerInfo()
 
   console.log(`Compiler: ${compilerInfo.version}`)
@@ -150,20 +157,20 @@ async function main() {
         compilerVersion: compilerInfo.version,
         optimizerRuns: compilerInfo.optimizerRuns,
         sourceCode: source,
-        licenseType: "MIT",
-        constructorArguments: "", // All current contracts use empty constructors
+        licenseType: 'MIT',
+        constructorArguments: '', // All current contracts use empty constructors
       })
     } catch (e: any) {
       console.error(`  ✗ ${name}: ${e.message}`)
     }
   }
 
-  console.log("\nVerification complete!")
+  console.log('\nVerification complete!')
 }
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error("Verification failed:", error)
+    console.error('Verification failed:', error)
     process.exit(1)
   })

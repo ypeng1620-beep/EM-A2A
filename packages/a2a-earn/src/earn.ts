@@ -21,7 +21,7 @@ export type StrategyType = 'conservative' | 'balanced' | 'aggressive'
 export interface YieldStrategy {
   type: StrategyType
   name: string
-  apy: number       // e.g. 0.10 = 10% APY
+  apy: number // e.g. 0.10 = 10% APY
   risk: 'low' | 'medium' | 'high'
   minDeposit: string
 }
@@ -49,8 +49,8 @@ export interface YieldEntry {
 }
 
 export interface A2AEarnConfig {
-  managementFee?: number  // annual, e.g. 0.01 = 1%
-  excessShare?: number    // above benchmark, e.g. 0.20 = 20%
+  managementFee?: number // annual, e.g. 0.01 = 1%
+  excessShare?: number // above benchmark, e.g. 0.20 = 20%
   benchmarkApy?: number
 }
 
@@ -59,9 +59,27 @@ export interface A2AEarnConfig {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_STRATEGIES: Record<StrategyType, YieldStrategy> = {
-  conservative: { type: 'conservative', name: 'Treasury Ladder', apy: 0.05, risk: 'low', minDeposit: '10000000' },
-  balanced:     { type: 'balanced',     name: 'DeFi Liquidity',  apy: 0.10, risk: 'medium', minDeposit: '50000000' },
-  aggressive:   { type: 'aggressive',   name: 'Alpha Vault',     apy: 0.18, risk: 'high',   minDeposit: '100000000' },
+  conservative: {
+    type: 'conservative',
+    name: 'Treasury Ladder',
+    apy: 0.05,
+    risk: 'low',
+    minDeposit: '10000000',
+  },
+  balanced: {
+    type: 'balanced',
+    name: 'DeFi Liquidity',
+    apy: 0.1,
+    risk: 'medium',
+    minDeposit: '50000000',
+  },
+  aggressive: {
+    type: 'aggressive',
+    name: 'Alpha Vault',
+    apy: 0.18,
+    risk: 'high',
+    minDeposit: '100000000',
+  },
 }
 
 // ---------------------------------------------------------------------------
@@ -78,12 +96,12 @@ function bigSub(a: string, b: string): string {
 }
 
 function bigMulRatio(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000)) / 1_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000))) / 1_000_000n).toString()
 }
 
 /** 1e18 precision ratio multiply */
 function bigMulRatio18(amount: string, ratio: number): string {
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1e18)) / BigInt(1e18)).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1e18))) / BigInt(1e18)).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -108,7 +126,7 @@ export class A2AEarn {
     }
 
     this.managementFee = config.managementFee ?? 0.01
-    this.excessShare = config.excessShare ?? 0.20
+    this.excessShare = config.excessShare ?? 0.2
     this.benchmarkApy = config.benchmarkApy ?? 0.04
   }
 
@@ -256,8 +274,8 @@ export class A2AEarn {
   }
 
   getAgentPositions(agentId: string, status?: 'active' | 'redeemed'): Position[] {
-    const all = [...this.positions.values()].filter(p => p.agentId === agentId)
-    return status ? all.filter(p => p.status === status) : all
+    const all = [...this.positions.values()].filter((p) => p.agentId === agentId)
+    return status ? all.filter((p) => p.status === status) : all
   }
 
   getYieldHistory(positionId: string): YieldEntry[] {

@@ -59,12 +59,12 @@ export class AMLScanner {
     // Check recent transaction patterns
     const recent = this.recentTransactions.get(did) ?? []
     const windowMs = 60 * 60 * 1000 // 1 hour
-    const recentWindow = recent.filter(tx => Date.now() - tx.timestamp < windowMs)
+    const recentWindow = recent.filter((tx) => Date.now() - tx.timestamp < windowMs)
 
     // Structuring (many small transactions)
     const amountValue = Number(amount) / 1e6
     if (amountValue > 0 && amountValue < 100) {
-      const smallTxCount = recentWindow.filter(tx => {
+      const smallTxCount = recentWindow.filter((tx) => {
         const txAmount = Number(tx.amount) / 1e6
         return txAmount > 0 && txAmount < 100
       }).length
@@ -95,7 +95,7 @@ export class AMLScanner {
       })
     }
 
-    const suspicious = patterns.some(p => p.confidence > 0.7)
+    const suspicious = patterns.some((p) => p.confidence > 0.7)
     const score = Math.min(
       100,
       patterns.reduce((sum, p) => sum + p.confidence * 30, suspicious ? 40 : 0),

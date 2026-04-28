@@ -28,7 +28,7 @@ export class KYAEngine {
       status: 'pending',
       riskScore: 50,
       riskLevel: 'medium',
-      credentials: identity.credentials.map(c => c.id),
+      credentials: identity.credentials.map((c) => c.id),
       flags: [],
     }
     this.records.set(identity.did, record)

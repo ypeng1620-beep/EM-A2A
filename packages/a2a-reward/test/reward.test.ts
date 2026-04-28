@@ -42,8 +42,12 @@ describe('A2AReward', () => {
     })
 
     it('should reject zero or negative amount', () => {
-      expect(() => reward.earnPoints('did:a', '0', 'transaction', 'Zero')).toThrow('must be positive')
-      expect(() => reward.earnPoints('did:a', '-100', 'transaction', 'Neg')).toThrow('must be positive')
+      expect(() => reward.earnPoints('did:a', '0', 'transaction', 'Zero')).toThrow(
+        'must be positive',
+      )
+      expect(() => reward.earnPoints('did:a', '-100', 'transaction', 'Neg')).toThrow(
+        'must be positive',
+      )
     })
 
     it('should accumulate multiple earnings', () => {
@@ -133,18 +137,18 @@ describe('A2AReward', () => {
 
       const unlocked = reward.checkAchievements('did:agent1')
       // Should unlock 'first_trade' (1 tx), 'whale' (100k points), 'millionaire' (1M points? No, only 200k)
-      expect(unlocked.some(a => a.id === 'first_trade')).toBe(true)
-      expect(unlocked.some(a => a.id === 'whale')).toBe(true)
-      expect(unlocked.some(a => a.id === 'millionaire')).toBe(false)
+      expect(unlocked.some((a) => a.id === 'first_trade')).toBe(true)
+      expect(unlocked.some((a) => a.id === 'whale')).toBe(true)
+      expect(unlocked.some((a) => a.id === 'millionaire')).toBe(false)
     })
 
     it('should not re-unlock already earned achievements', () => {
       reward.earnPoints('did:agent1', '10000', 'transaction', 'Earn')
       const first = reward.checkAchievements('did:agent1')
-      expect(first.some(a => a.id === 'first_trade')).toBe(true)
+      expect(first.some((a) => a.id === 'first_trade')).toBe(true)
 
       const second = reward.checkAchievements('did:agent1')
-      expect(second.some(a => a.id === 'first_trade')).toBe(false)
+      expect(second.some((a) => a.id === 'first_trade')).toBe(false)
     })
 
     it('should return earned achievements list', () => {
@@ -153,7 +157,7 @@ describe('A2AReward', () => {
 
       const earned = reward.getAgentAchievements('did:agent1')
       expect(earned.length).toBeGreaterThan(0)
-      expect(earned.some(a => a.id === 'first_trade')).toBe(true)
+      expect(earned.some((a) => a.id === 'first_trade')).toBe(true)
     })
 
     it('should return empty achievements for new agent', () => {
@@ -171,21 +175,36 @@ describe('A2AReward', () => {
 
       reward.earnPoints('did:agent1', '600', 'transaction', 'Test')
       const unlocked = reward.checkAchievements('did:agent1')
-      expect(unlocked.some(a => a.id === 'custom_ach')).toBe(true)
+      expect(unlocked.some((a) => a.id === 'custom_ach')).toBe(true)
     })
   })
 
   describe('Redemption Options', () => {
     it('should create and list redemption options', () => {
-      reward.createRedemptionOption({ name: 'O1', description: 'D1', pointsCost: '100', benefit: 'B1' })
-      reward.createRedemptionOption({ name: 'O2', description: 'D2', pointsCost: '500', benefit: 'B2' })
+      reward.createRedemptionOption({
+        name: 'O1',
+        description: 'D1',
+        pointsCost: '100',
+        benefit: 'B1',
+      })
+      reward.createRedemptionOption({
+        name: 'O2',
+        description: 'D2',
+        pointsCost: '500',
+        benefit: 'B2',
+      })
 
       const options = reward.getRedemptionOptions()
       expect(options.length).toBe(2)
     })
 
     it('should filter inactive options', () => {
-      const opt = reward.createRedemptionOption({ name: 'O1', description: 'D1', pointsCost: '100', benefit: 'B1' })
+      const opt = reward.createRedemptionOption({
+        name: 'O1',
+        description: 'D1',
+        pointsCost: '100',
+        benefit: 'B1',
+      })
       reward.deactivateOption(opt.id)
 
       expect(reward.getRedemptionOptions(true).length).toBe(0)
@@ -225,10 +244,18 @@ describe('A2AReward', () => {
     it('should award streak bonus', () => {
       // Set up balance and stats manually to simulate 6-day streak
       ;(reward as any).balances.set('did:agent1', {
-        agentId: 'did:agent1', total: '10000', available: '10000', pending: '0', level: 1, levelName: '银牌',
+        agentId: 'did:agent1',
+        total: '10000',
+        available: '10000',
+        pending: '0',
+        level: 1,
+        levelName: '银牌',
       })
       ;(reward as any).agentStats.set('did:agent1', {
-        transactions: 10, referrals: 2, streakDays: 6, lastActive: Date.now() - 86400_000,
+        transactions: 10,
+        referrals: 2,
+        streakDays: 6,
+        lastActive: Date.now() - 86400_000,
       })
 
       const result = reward.checkIn('did:agent1')

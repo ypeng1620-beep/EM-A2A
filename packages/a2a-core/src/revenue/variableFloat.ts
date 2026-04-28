@@ -57,16 +57,20 @@ export class VariableFloatRevenue {
   private normalizeRiskFactor(riskScore: number): number {
     // riskScore: 0 (safe) → 100 (high risk)
     const normalized = riskScore / 100
-    return this.config.riskMultiplier.min +
+    return (
+      this.config.riskMultiplier.min +
       normalized * (this.config.riskMultiplier.max - this.config.riskMultiplier.min)
+    )
   }
 
   private normalizeCreditFactor(creditScore: number): number {
     // creditScore: 300 → 950
     // Higher credit → lower factor
     const normalized = (creditScore - 300) / 650
-    return this.config.creditMultiplier.max -
+    return (
+      this.config.creditMultiplier.max -
       normalized * (this.config.creditMultiplier.max - this.config.creditMultiplier.min)
+    )
   }
 
   getConfig(): VariableFloatConfig {

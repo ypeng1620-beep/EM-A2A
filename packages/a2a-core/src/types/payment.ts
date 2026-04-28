@@ -13,7 +13,7 @@ export interface PaymentRequest {
   from: AgentDID
   to: AgentDID
   token: PaymentToken
-  amount: string         // wei 精度的字符串
+  amount: string // wei 精度的字符串
   memo?: string
   nonce: number
   expiry: number

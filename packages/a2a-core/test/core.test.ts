@@ -2,7 +2,14 @@ import { describe, it, expect } from 'vitest'
 import { RevenueEngine } from '../src/revenue/engine.js'
 import { FixedTierRevenue } from '../src/revenue/fixedTier.js'
 import { VariableFloatRevenue } from '../src/revenue/variableFloat.js'
-import { calculateCreditScore, getCreditLevel, generateDID, parseDID, createPaymentRequest, validatePaymentRequest } from '../src/index.js'
+import {
+  calculateCreditScore,
+  getCreditLevel,
+  generateDID,
+  parseDID,
+  createPaymentRequest,
+  validatePaymentRequest,
+} from '../src/index.js'
 
 describe('RevenueEngine', () => {
   it('should calculate fee with fixed tier mode', () => {
@@ -15,7 +22,11 @@ describe('RevenueEngine', () => {
 
   it('should calculate fee with variable float mode', () => {
     const engine = new RevenueEngine({ mode: 'variable_float' })
-    const result = engine.calculateFee('1000000', { riskScore: 30, creditScore: 800, transactionType: 'standard' })
+    const result = engine.calculateFee('1000000', {
+      riskScore: 30,
+      creditScore: 800,
+      transactionType: 'standard',
+    })
     expect(result.mode).toBe('variable_float')
   })
 

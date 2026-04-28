@@ -45,9 +45,36 @@ describe('KYAEngine', () => {
     const kya = new KYAEngine()
     const identity = makeIdentity('did:bai:tron:good')
     identity.credentials = [
-      { id: 'c1', type: 'code_audit', issuer: 'bai', holder: identity.did, issuedAt: Date.now(), expiresAt: Date.now() + 365 * 86400000, status: 'active', metadata: {} },
-      { id: 'c2', type: 'risk_controller', issuer: 'bai', holder: identity.did, issuedAt: Date.now(), expiresAt: Date.now() + 365 * 86400000, status: 'active', metadata: {} },
-      { id: 'c3', type: 'data_analyst', issuer: 'bai', holder: identity.did, issuedAt: Date.now(), expiresAt: Date.now() + 365 * 86400000, status: 'active', metadata: {} },
+      {
+        id: 'c1',
+        type: 'code_audit',
+        issuer: 'bai',
+        holder: identity.did,
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 365 * 86400000,
+        status: 'active',
+        metadata: {},
+      },
+      {
+        id: 'c2',
+        type: 'risk_controller',
+        issuer: 'bai',
+        holder: identity.did,
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 365 * 86400000,
+        status: 'active',
+        metadata: {},
+      },
+      {
+        id: 'c3',
+        type: 'data_analyst',
+        issuer: 'bai',
+        holder: identity.did,
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 365 * 86400000,
+        status: 'active',
+        metadata: {},
+      },
     ]
     identity.registeredAt = Date.now() - 400 * 24 * 60 * 60 * 1000 // 400 days ago
     kya.submitForVerification(identity)
@@ -64,7 +91,7 @@ describe('AMLScanner', () => {
     scanner.addToBlacklist('TBLACKLIST')
     const result = scanner.scanTransaction('did:a', '1000000', 'TBLACKLIST')
     expect(result.suspicious).toBe(true)
-    expect(result.patterns.some(p => p.name === 'blacklisted_counterparty')).toBe(true)
+    expect(result.patterns.some((p) => p.name === 'blacklisted_counterparty')).toBe(true)
   })
 
   it('should pass clean transaction', () => {
@@ -79,7 +106,7 @@ describe('AMLScanner', () => {
       scanner.recordTransaction('did:a', '50000000', 'TCLEAN')
     }
     const result = scanner.scanTransaction('did:a', '50000000', 'TCLEAN')
-    expect(result.patterns.some(p => p.name === 'structuring')).toBe(true)
+    expect(result.patterns.some((p) => p.name === 'structuring')).toBe(true)
   })
 })
 

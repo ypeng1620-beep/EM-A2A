@@ -12,7 +12,7 @@ describe('A2AEarn', () => {
     it('should return default strategies', () => {
       const strats = earn.getStrategies()
       expect(strats.length).toBe(3)
-      expect(strats.map(s => s.type).sort()).toEqual(['aggressive', 'balanced', 'conservative'])
+      expect(strats.map((s) => s.type).sort()).toEqual(['aggressive', 'balanced', 'conservative'])
     })
 
     it('should return a specific strategy', () => {
@@ -27,7 +27,13 @@ describe('A2AEarn', () => {
     })
 
     it('should allow custom strategies', () => {
-      earn.addStrategy({ type: 'conservative', name: 'Ultra Safe', apy: 0.03, risk: 'low', minDeposit: '1000000' })
+      earn.addStrategy({
+        type: 'conservative',
+        name: 'Ultra Safe',
+        apy: 0.03,
+        risk: 'low',
+        minDeposit: '1000000',
+      })
       const s = earn.getStrategy('conservative')
       expect(s!.apy).toBe(0.03)
     })
@@ -40,7 +46,7 @@ describe('A2AEarn', () => {
       expect(pos.status).toBe('active')
       expect(pos.amount).toBe('100000000')
       expect(pos.strategy).toBe('balanced')
-      expect(pos.apy).toBe(0.10)
+      expect(pos.apy).toBe(0.1)
     })
 
     it('should reject below-minimum deposit', () => {
@@ -48,7 +54,9 @@ describe('A2AEarn', () => {
     })
 
     it('should reject unknown strategy', () => {
-      expect(() => earn.deposit('did:a', '100000000', 'USDC', 'ponzi' as any)).toThrow('Unknown strategy')
+      expect(() => earn.deposit('did:a', '100000000', 'USDC', 'ponzi' as any)).toThrow(
+        'Unknown strategy',
+      )
     })
   })
 
@@ -78,7 +86,7 @@ describe('A2AEarn', () => {
 
     it('should apply excess profit share for strategies above benchmark', () => {
       // Custom config with clear fees
-      const e2 = new A2AEarn({ managementFee: 0.01, excessShare: 0.20, benchmarkApy: 0.04 })
+      const e2 = new A2AEarn({ managementFee: 0.01, excessShare: 0.2, benchmarkApy: 0.04 })
       const pos = e2.deposit('did:a', '100000000', 'USDC', 'conservative') // 5% APY, 1% above 4% benchmark
       const p = e2.getPosition(pos.id)!
       ;(p as any).lastAccrualAt = Date.now() - 86400_000 * 365

@@ -35,13 +35,13 @@ EM-A2A/
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Build all packages |
-| `pnpm test` | Run all tests |
-| `pnpm lint` | Typecheck all packages |
+| Command                  | Description                |
+| ------------------------ | -------------------------- |
+| `pnpm build`             | Build all packages         |
+| `pnpm test`              | Run all tests              |
+| `pnpm lint`              | Typecheck all packages     |
 | `pnpm contracts:compile` | Compile Solidity contracts |
-| `pnpm contracts:test` | Run contract tests |
+| `pnpm contracts:test`    | Run contract tests         |
 
 ## Conventions
 

@@ -18,7 +18,7 @@ export type RiskProfile = 'conservative' | 'moderate' | 'balanced' | 'growth' | 
 
 export interface PortfolioAsset {
   token: string
-  allocation: number       // 0–1, sum must be 1
+  allocation: number // 0–1, sum must be 1
   amount: string
   apy: number
 }
@@ -41,20 +41,20 @@ export interface InvestmentStrategy {
   name: string
   description: string
   riskProfile: RiskProfile
-  expectedReturn: number     // APY
-  volatility: number         // std dev
+  expectedReturn: number // APY
+  volatility: number // std dev
   minInvestment: string
   assetAllocation: { token: string; allocation: number }[]
 }
 
 export interface Recommendation {
   strategy: InvestmentStrategy
-  confidence: number         // 0–1
+  confidence: number // 0–1
   reasoning: string
 }
 
 export interface A2AInvestConfig {
-  managementFee?: number     // 0.01 = 1%/yr
+  managementFee?: number // 0.01 = 1%/yr
 }
 
 // ---------------------------------------------------------------------------
@@ -109,7 +109,7 @@ const DEFAULT_STRATEGIES: InvestmentStrategy[] = [
     description: '偏向高成长资产，适合承受中等波动的投资者',
     riskProfile: 'growth',
     expectedReturn: 0.22,
-    volatility: 0.30,
+    volatility: 0.3,
     minInvestment: '200000000',
     assetAllocation: [
       { token: 'ETH', allocation: 0.5 },
@@ -122,7 +122,7 @@ const DEFAULT_STRATEGIES: InvestmentStrategy[] = [
     name: 'Alpha 猎手',
     description: '高波动高回报，聚焦新兴代币和 DeFi 协议',
     riskProfile: 'aggressive',
-    expectedReturn: 0.40,
+    expectedReturn: 0.4,
     volatility: 0.55,
     minInvestment: '500000000',
     assetAllocation: [
@@ -203,7 +203,7 @@ function bigAdd(a: string, b: string): string {
 
 function bigMulRatio(amount: string, ratio: number): string {
   // Use 1e9 precision (safe within MAX_SAFE_INTEGER)
-  return (BigInt(amount) * BigInt(Math.round(ratio * 1_000_000_000)) / 1_000_000_000n).toString()
+  return ((BigInt(amount) * BigInt(Math.round(ratio * 1_000_000_000))) / 1_000_000_000n).toString()
 }
 
 // ---------------------------------------------------------------------------
@@ -285,7 +285,7 @@ export class A2AInvest {
       agentId: params.agentId,
       name: params.name,
       riskProfile,
-      assets: params.assets.map(a => ({ ...a })),
+      assets: params.assets.map((a) => ({ ...a })),
       totalValue,
       status: 'active',
       createdAt: Date.now(),
@@ -297,7 +297,10 @@ export class A2AInvest {
     return portfolio
   }
 
-  rebalancePortfolio(portfolioId: string, newAllocations: { token: string; allocation: number }[]): Portfolio {
+  rebalancePortfolio(
+    portfolioId: string,
+    newAllocations: { token: string; allocation: number }[],
+  ): Portfolio {
     const port = this.mustGet(portfolioId)
     if (port.status !== 'active') {
       throw new Error('Cannot rebalance a closed portfolio')
@@ -309,8 +312,8 @@ export class A2AInvest {
     }
 
     // Distribute totalValue across new allocations
-    const newAssets: PortfolioAsset[] = newAllocations.map(alloc => {
-      const existing = port.assets.find(a => a.token === alloc.token)
+    const newAssets: PortfolioAsset[] = newAllocations.map((alloc) => {
+      const existing = port.assets.find((a) => a.token === alloc.token)
       const apy = existing?.apy ?? 0.05
       const amount = bigMulRatio(port.totalValue, alloc.allocation)
       return { token: alloc.token, allocation: alloc.allocation, amount, apy }
@@ -369,7 +372,9 @@ export class A2AInvest {
       const grossReturn = bigMulRatio(asset.amount, asset.apy * years)
       const mgmtFee = bigMulRatio(grossReturn, this.managementFee)
       const netReturn = (BigInt(grossReturn) - BigInt(mgmtFee)).toString()
-      totalReturn = (BigInt(totalReturn) + BigInt(netReturn.startsWith('-') ? '0' : netReturn)).toString()
+      totalReturn = (
+        BigInt(totalReturn) + BigInt(netReturn.startsWith('-') ? '0' : netReturn)
+      ).toString()
     }
     return totalReturn
   }
@@ -380,10 +385,10 @@ export class A2AInvest {
 
   getRecommendations(riskProfile: RiskProfile, amount: string): Recommendation[] {
     const eligible = this.strategies.filter(
-      s => s.riskProfile === riskProfile && BigInt(amount) >= BigInt(s.minInvestment),
+      (s) => s.riskProfile === riskProfile && BigInt(amount) >= BigInt(s.minInvestment),
     )
 
-    return eligible.map(s => ({
+    return eligible.map((s) => ({
       strategy: s,
       confidence: this.calcConfidence(s, riskProfile),
       reasoning: this.buildReasoning(s, amount),
@@ -391,7 +396,7 @@ export class A2AInvest {
   }
 
   addStrategy(strategy: InvestmentStrategy): void {
-    const idx = this.strategies.findIndex(s => s.type === strategy.type)
+    const idx = this.strategies.findIndex((s) => s.type === strategy.type)
     if (idx >= 0) {
       this.strategies[idx] = strategy
     } else {
@@ -412,8 +417,8 @@ export class A2AInvest {
   }
 
   getAgentPortfolios(agentId: string, status?: 'active' | 'closed'): Portfolio[] {
-    const all = [...this.portfolios.values()].filter(p => p.agentId === agentId)
-    return status ? all.filter(p => p.status === status) : all
+    const all = [...this.portfolios.values()].filter((p) => p.agentId === agentId)
+    return status ? all.filter((p) => p.status === status) : all
   }
 
   getTotalAUM(): string {
@@ -442,7 +447,7 @@ export class A2AInvest {
 
   private apyToProfile(apy: number): RiskProfile {
     if (apy <= 0.06) return 'conservative'
-    if (apy <= 0.10) return 'moderate'
+    if (apy <= 0.1) return 'moderate'
     if (apy <= 0.16) return 'balanced'
     if (apy <= 0.25) return 'growth'
     return 'aggressive'

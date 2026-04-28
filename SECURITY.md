@@ -15,8 +15,8 @@ The EM-A2A project includes:
 
 ## Supported Versions
 
-| Version | Supported          |
-|---------|--------------------|
+| Version | Supported                             |
+| ------- | ------------------------------------- |
 | 0.1.x   | :white_check_mark: Active development |
 
 ## Known Attack Surfaces
@@ -28,7 +28,7 @@ The EM-A2A project includes:
 ## Audit Status
 
 | Component | Auditor | Date | Report |
-|-----------|---------|------|--------|
+| --------- | ------- | ---- | ------ |
 | (pending) | —       | —    | —      |
 
 ## Disclosure Timeline

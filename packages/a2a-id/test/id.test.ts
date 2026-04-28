@@ -24,24 +24,45 @@ const mockTronAdapter = {
     credentials: [],
   }),
   updateAgentMetadata: vi.fn().mockResolvedValue({
-    txHash: 'tx_meta_001', blockNumber: 123,
-    from: 'TNEW001', to: '', token: 'TRX', amount: '0',
-    fee: '0', status: 'confirmed', timestamp: Date.now(), chainId: 'tron:mainnet',
+    txHash: 'tx_meta_001',
+    blockNumber: 123,
+    from: 'TNEW001',
+    to: '',
+    token: 'TRX',
+    amount: '0',
+    fee: '0',
+    status: 'confirmed',
+    timestamp: Date.now(),
+    chainId: 'tron:mainnet',
   }),
   issueCredential: vi.fn().mockResolvedValue({
     credentialId: 'cred_001',
     txHash: 'tx_cred_001',
   }),
   revokeCredential: vi.fn().mockResolvedValue({
-    txHash: 'tx_revoke_001', blockNumber: 123,
-    from: '', to: '', token: 'TRX', amount: '0',
-    fee: '0', status: 'confirmed', timestamp: Date.now(), chainId: 'tron:mainnet',
+    txHash: 'tx_revoke_001',
+    blockNumber: 123,
+    from: '',
+    to: '',
+    token: 'TRX',
+    amount: '0',
+    fee: '0',
+    status: 'confirmed',
+    timestamp: Date.now(),
+    chainId: 'tron:mainnet',
   }),
   getCredentials: vi.fn().mockResolvedValue([
-    { id: 'cred_001', type: 'code_audit', issuer: 'bai_authority',
-      holder: 'did:bai:tron:TNEW001', issuedAt: Date.now(),
-      expiresAt: Date.now() + 365 * 86400000, status: 'active',
-      metadata: { level: 'senior' }, txHash: 'tx_cred_001' },
+    {
+      id: 'cred_001',
+      type: 'code_audit',
+      issuer: 'bai_authority',
+      holder: 'did:bai:tron:TNEW001',
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 365 * 86400000,
+      status: 'active',
+      metadata: { level: 'senior' },
+      txHash: 'tx_cred_001',
+    },
   ]),
   getCreditScore: vi.fn(),
   openMicroPaymentChannel: vi.fn(),
@@ -70,7 +91,7 @@ describe('A2AID', () => {
   let service: A2AID
   const config = {
     productId: 'a2a-id-test',
-    registrationFee: '5000000',   // $5
+    registrationFee: '5000000', // $5
     verificationFee: '100000000', // $100
     annualReviewFee: '150000000', // $150
   }

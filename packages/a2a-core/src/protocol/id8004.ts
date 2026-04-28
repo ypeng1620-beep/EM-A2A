@@ -59,9 +59,9 @@ export function calculateCreditScore(factors: CreditScore['factors']): number {
   const weights = {
     transactionVolume: 0.25,
     completionRate: 0.35,
-    disputeRate: 0.20,
-    accountAge: 0.10,
-    credentialCount: 0.10,
+    disputeRate: 0.2,
+    accountAge: 0.1,
+    credentialCount: 0.1,
   }
 
   const volumeScore = Math.min(factors.transactionVolume / 1000, 100)

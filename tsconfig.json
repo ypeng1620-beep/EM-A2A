@@ -1,0 +1,19 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/a2a-core" },
+    { "path": "./packages/a2a-compliance" },
+    { "path": "./packages/a2a-contracts" },
+    { "path": "./packages/a2a-pay" },
+    { "path": "./packages/a2a-id" },
+    { "path": "./packages/a2a-credit" },
+    { "path": "./packages/a2a-market" },
+    { "path": "./packages/a2a-lend" },
+    { "path": "./packages/a2a-earn" },
+    { "path": "./packages/a2a-insure" },
+    { "path": "./packages/a2a-invoice" },
+    { "path": "./packages/a2a-invest" },
+    { "path": "./packages/a2a-reward" },
+    { "path": "./packages/a2a-mcp" }
+  ]
+}

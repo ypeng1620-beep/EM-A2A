@@ -11,7 +11,7 @@
  * 默认网络: shasta (测试网)
  */
 
-import { randomUUID } from "crypto"
+import { randomUUID } from 'crypto'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -28,9 +28,9 @@ function parseArgs(raw: string[]): CliArgs {
   const flags: Record<string, string> = {}
 
   for (let i = 0; i < raw.length; i++) {
-    if (raw[i].startsWith("--")) {
+    if (raw[i].startsWith('--')) {
       const key = raw[i].slice(2)
-      const val = raw[i + 1] && !raw[i + 1].startsWith("--") ? raw[++i] : "true"
+      const val = raw[i + 1] && !raw[i + 1].startsWith('--') ? raw[++i] : 'true'
       flags[key] = val
     } else {
       positional.push(raw[i])
@@ -38,7 +38,7 @@ function parseArgs(raw: string[]): CliArgs {
   }
 
   return {
-    command: positional[0] || "help",
+    command: positional[0] || 'help',
     subcommand: positional[1],
     flags,
   }
@@ -48,7 +48,7 @@ function parseArgs(raw: string[]): CliArgs {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const SEP = "=".repeat(60)
+const SEP = '='.repeat(60)
 
 function header(title: string) {
   console.log(`\n${SEP}`)
@@ -58,14 +58,14 @@ function header(title: string) {
 
 function table(rows: string[][], pad = 2) {
   if (rows.length === 0) return
-  const cols = rows[0].map((_, ci) => Math.max(...rows.map(r => r[ci].length)))
+  const cols = rows[0].map((_, ci) => Math.max(...rows.map((r) => r[ci].length)))
   for (const row of rows) {
-    console.log(row.map((c, i) => c.padEnd(cols[i] + pad)).join(""))
+    console.log(row.map((c, i) => c.padEnd(cols[i] + pad)).join(''))
   }
 }
 
 function timestamp(): string {
-  return new Date().toISOString().replace("T", " ").slice(0, 19)
+  return new Date().toISOString().replace('T', ' ').slice(0, 19)
 }
 
 // ---------------------------------------------------------------------------
@@ -74,9 +74,9 @@ function timestamp(): string {
 
 interface ProductStats {
   id: string
-  mode: string           // "fixed_tier" | "variable_float"
-  rate: string           // basis points
-  monthlyVolume: string  // USD
+  mode: string // "fixed_tier" | "variable_float"
+  rate: string // basis points
+  monthlyVolume: string // USD
   revenueCollected: string
   active: boolean
 }
@@ -91,15 +91,50 @@ interface AgentInfo {
 }
 
 const SAMPLE_PRODUCTS: ProductStats[] = [
-  { id: "a2a-pay", mode: "fixed_tier", rate: "100", monthlyVolume: "254300000000", revenueCollected: "2543000000", active: true },
-  { id: "a2a-market", mode: "fixed_tier", rate: "150", monthlyVolume: "88200000000", revenueCollected: "1323000000", active: true },
-  { id: "a2a-lend", mode: "variable_float", rate: "150", monthlyVolume: "150000000000", revenueCollected: "2250000000", active: true },
-  { id: "a2a-earn", mode: "variable_float", rate: "100", monthlyVolume: "50000000000", revenueCollected: "500000000", active: true },
-  { id: "a2a-insure", mode: "variable_float", rate: "200", monthlyVolume: "30000000000", revenueCollected: "600000000", active: false },
+  {
+    id: 'a2a-pay',
+    mode: 'fixed_tier',
+    rate: '100',
+    monthlyVolume: '254300000000',
+    revenueCollected: '2543000000',
+    active: true,
+  },
+  {
+    id: 'a2a-market',
+    mode: 'fixed_tier',
+    rate: '150',
+    monthlyVolume: '88200000000',
+    revenueCollected: '1323000000',
+    active: true,
+  },
+  {
+    id: 'a2a-lend',
+    mode: 'variable_float',
+    rate: '150',
+    monthlyVolume: '150000000000',
+    revenueCollected: '2250000000',
+    active: true,
+  },
+  {
+    id: 'a2a-earn',
+    mode: 'variable_float',
+    rate: '100',
+    monthlyVolume: '50000000000',
+    revenueCollected: '500000000',
+    active: true,
+  },
+  {
+    id: 'a2a-insure',
+    mode: 'variable_float',
+    rate: '200',
+    monthlyVolume: '30000000000',
+    revenueCollected: '600000000',
+    active: false,
+  },
 ]
 
 function getNetwork(args: CliArgs): string {
-  return args.flags["network"] || "shasta"
+  return args.flags['network'] || 'shasta'
 }
 
 function formatUSDC(amount: string): string {
@@ -146,9 +181,7 @@ async function cmdProducts(args: CliArgs) {
   const network = getNetwork(args)
   header(`Products — ${network}`)
 
-  const rows = [
-    ["Product ID", "Mode", "Rate", "Volume (USD)", "Revenue", "Active"],
-  ]
+  const rows = [['Product ID', 'Mode', 'Rate', 'Volume (USD)', 'Revenue', 'Active']]
 
   for (const p of SAMPLE_PRODUCTS) {
     rows.push([
@@ -157,18 +190,18 @@ async function cmdProducts(args: CliArgs) {
       `${(Number(p.rate) / 100).toFixed(2)}%`,
       formatUSDC(p.monthlyVolume),
       formatUSDC(p.revenueCollected),
-      p.active ? "YES" : "NO",
+      p.active ? 'YES' : 'NO',
     ])
   }
 
   table(rows)
   console.log(`\n  Last updated: ${timestamp()}`)
-  console.log("  Note: Connect to chain for real-time data (TronAdapter required)")
+  console.log('  Note: Connect to chain for real-time data (TronAdapter required)')
 }
 
 async function cmdAgent(args: CliArgs) {
   if (!args.subcommand) {
-    console.error("Usage: tsx cli/index.ts agent <did> [--network tron|shasta]")
+    console.error('Usage: tsx cli/index.ts agent <did> [--network tron|shasta]')
     process.exit(1)
   }
 
@@ -179,9 +212,9 @@ async function cmdAgent(args: CliArgs) {
   // Simulated agent data
   const info: AgentInfo = {
     did,
-    registered: "2025-08-15 10:30:00",
+    registered: '2025-08-15 10:30:00',
     creditScore: 785,
-    creditLevel: "优秀",
+    creditLevel: '优秀',
     credentialCount: 3,
     lastActive: timestamp(),
   }
@@ -195,22 +228,22 @@ async function cmdAgent(args: CliArgs) {
 }
 
 async function cmdWithdraw(args: CliArgs) {
-  const product = args.flags["product"]
-  const to = args.flags["to"]
+  const product = args.flags['product']
+  const to = args.flags['to']
   const network = getNetwork(args)
 
   if (!product) {
-    console.error("Missing --product <id>")
+    console.error('Missing --product <id>')
     process.exit(1)
   }
   if (!to) {
-    console.error("Missing --to <address>")
+    console.error('Missing --to <address>')
     process.exit(1)
   }
 
   header(`Withdraw — ${product} → ${to} (${network})`)
 
-  console.log("  ⚠ This is a dry-run in simulation mode.")
+  console.log('  ⚠ This is a dry-run in simulation mode.')
   console.log(`  Product:    ${product}`)
   console.log(`  Recipient:  ${to}`)
   console.log(`  Network:    ${network}`)
@@ -219,45 +252,52 @@ async function cmdWithdraw(args: CliArgs) {
 }
 
 async function cmdHealth() {
-  header("EM-A2A Health Check")
+  header('EM-A2A Health Check')
 
   const pkgNames = [
-    "a2a-core", "a2a-contracts", "a2a-compliance",
-    "a2a-pay", "a2a-id", "a2a-credit", "a2a-market",
-    "a2a-lend", "a2a-earn", "a2a-insure",
-    "a2a-invoice", "a2a-invest", "a2a-reward",
+    'a2a-core',
+    'a2a-contracts',
+    'a2a-compliance',
+    'a2a-pay',
+    'a2a-id',
+    'a2a-credit',
+    'a2a-market',
+    'a2a-lend',
+    'a2a-earn',
+    'a2a-insure',
+    'a2a-invoice',
+    'a2a-invest',
+    'a2a-reward',
   ]
 
-  const results: string[][] = [
-    ["Package", "Build", "Tests", "Status"],
-  ]
+  const results: string[][] = [['Package', 'Build', 'Tests', 'Status']]
 
   for (const name of pkgNames) {
-    results.push([`@em/${name}`, "✓", "✓", "healthy"])
+    results.push([`@em/${name}`, '✓', '✓', 'healthy'])
   }
 
-  results.push(["contracts (4 .sol)", "✓", "✓", "healthy"])
+  results.push(['contracts (4 .sol)', '✓', '✓', 'healthy'])
 
   table(results)
 
   console.log(`\n  Total packages: ${pkgNames.length} products + contracts`)
   console.log(`  Node.js:        ${process.version}`)
   console.log(`  Timestamp:      ${timestamp()}`)
-  console.log("  All systems operational.")
+  console.log('  All systems operational.')
 }
 
 async function cmdStats() {
-  header("EM-A2A Platform Statistics")
+  header('EM-A2A Platform Statistics')
 
   // Aggregate stats from all products (simulated totals)
   const stats = {
     totalAgents: 2847,
     totalTransactions: 156432,
-    totalVolumeUSD: "582300000000",      // ~582.3M USDC
-    totalFeesCollected: "8756000000",    // ~8,756 USDC
+    totalVolumeUSD: '582300000000', // ~582.3M USDC
+    totalFeesCollected: '8756000000', // ~8,756 USDC
     averageCreditScore: 712,
     activePortfolios: 1240,
-    totalPointsIssued: "45800000000",
+    totalPointsIssued: '45800000000',
     invoicesGenerated: 8932,
     insurancePolicies: 647,
     activeLoans: 523,
@@ -284,34 +324,34 @@ async function main() {
   const args = parseArgs(process.argv.slice(2))
 
   switch (args.command) {
-    case "products":
+    case 'products':
       await cmdProducts(args)
       break
-    case "agent":
+    case 'agent':
       await cmdAgent(args)
       break
-    case "withdraw":
+    case 'withdraw':
       await cmdWithdraw(args)
       break
-    case "health":
+    case 'health':
       await cmdHealth()
       break
-    case "stats":
+    case 'stats':
       await cmdStats()
       break
-    case "help":
-    case "--help":
-    case "-h":
+    case 'help':
+    case '--help':
+    case '-h':
       await cmdHelp()
       break
     default:
       console.error(`Unknown command: ${args.command}`)
-      console.error("Run `tsx cli/index.ts help` for usage.")
+      console.error('Run `tsx cli/index.ts help` for usage.')
       process.exit(1)
   }
 }
 
 main().catch((e) => {
-  console.error("CLI error:", e)
+  console.error('CLI error:', e)
   process.exit(1)
 })
