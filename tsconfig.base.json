@@ -12,6 +12,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "composite": true,
+    "types": ["node"],
     "outDir": "./dist",
     "rootDir": "./src"
   }
