@@ -4,7 +4,7 @@
   "private": true,
   "pnpm": {
     "overrides": {
-      "undici": "^7.0.0"
+      "undici": "^6.21.0"
     }
   },
   "description": "EM-A2A: AI Agent Economy — Alipay-on-chain for Agent-to-Agent commerce",

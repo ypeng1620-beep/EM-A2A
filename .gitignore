@@ -6,6 +6,8 @@ coverage/
 .hardhat/
 cache/
 artifacts/
+artifacts-tron/
+cache-tron/
 typechain-types/
 contracts/deployments/
 data/
