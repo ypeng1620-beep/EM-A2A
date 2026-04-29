@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock @em/a2a-core chain factory
+// Mock @poisonpyf/a2a-core chain factory
 const mockTronAdapter = {
   chainId: 'tron:mainnet',
   nativeToken: 'TRX',
@@ -73,8 +73,8 @@ const mockTronAdapter = {
   estimateFee: vi.fn().mockResolvedValue('1000000'),
 }
 
-vi.mock('@em/a2a-core', async () => {
-  const actual = await vi.importActual('@em/a2a-core')
+vi.mock('@poisonpyf/a2a-core', async () => {
+  const actual = await vi.importActual('@poisonpyf/a2a-core')
   return {
     ...actual,
     ChainFactory: {

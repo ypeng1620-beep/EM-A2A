@@ -20,7 +20,7 @@
 │                     8004 On-Chain Identity                        │
 │        Agent DID · SBT 资质 · 信用评分 · 链上行为记录             │
 ├───────────────────────────────┼──────────────────────────────────┤
-│              Compliance Layer (@em/a2a-compliance)               │
+│              Compliance Layer (@poisonpyf/a2a-compliance)               │
 │     KYC/KYA · AML · 交易审计 · 税务申报 · 监管适配 (TRON)        │
 ├───────────────────────────────┼──────────────────────────────────┤
 │         Chain Abstraction Layer (TRON / EVM L2 / Solana)         │
@@ -56,14 +56,14 @@ Agent A 发起交易
 ## 包依赖图
 
 ```
-@em/a2a-pay ──────┐
-@em/a2a-credit ───┤
-@em/a2a-market ───┤
-@em/a2a-lend ─────┤
-@em/a2a-earn ─────┼──→ @em/a2a-core ──→ @em/a2a-contracts
-@em/a2a-insure ───┤         │
-@em/a2a-id ───────┤         └──→ @em/a2a-compliance
-@em/a2a-invoice ──┤
-@em/a2a-invest ───┤
-@em/a2a-reward ───┘
+@poisonpyf/a2a-pay ──────┐
+@poisonpyf/a2a-credit ───┤
+@poisonpyf/a2a-market ───┤
+@poisonpyf/a2a-lend ─────┤
+@poisonpyf/a2a-earn ─────┼──→ @poisonpyf/a2a-core ──→ @poisonpyf/a2a-contracts
+@poisonpyf/a2a-insure ───┤         │
+@poisonpyf/a2a-id ───────┤         └──→ @poisonpyf/a2a-compliance
+@poisonpyf/a2a-invoice ──┤
+@poisonpyf/a2a-invest ───┤
+@poisonpyf/a2a-reward ───┘
 ```

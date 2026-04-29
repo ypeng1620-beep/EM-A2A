@@ -15,8 +15,8 @@ import {
   validatePaymentRequest,
   type IChainAdapter,
   type TxReceipt,
-} from '@em/a2a-core'
-import { KYAEngine, AMLScanner, AuditTrail } from '@em/a2a-compliance'
+} from '@poisonpyf/a2a-core'
+import { KYAEngine, AMLScanner, AuditTrail } from '@poisonpyf/a2a-compliance'
 import type { A2APayConfig, TransferParams, TransferResult } from './types.js'
 
 export class A2APay {
@@ -29,7 +29,7 @@ export class A2APay {
 
   constructor(config: A2APayConfig) {
     this.config = config
-    this.chain = ChainFactory.getAdapter('tron:mainnet')
+    this.chain = ChainFactory.getAdapter()
     this.revenue = new RevenueEngine({
       mode: config.revenueMode,
     })

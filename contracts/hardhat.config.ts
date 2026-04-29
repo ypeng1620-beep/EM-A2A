@@ -1,32 +1,44 @@
 import { HardhatUserConfig } from 'hardhat/config'
 import '@nomicfoundation/hardhat-toolbox'
+import '@layerzerolabs/hardhat-deploy'
+import '@layerzerolabs/hardhat-tron'
 
 const PRIVATE_KEY =
   process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000'
 
+const TRON_PRO_API_KEY = process.env.TRON_API_KEY || ''
+
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.24',
-    settings: {
-      optimizer: { enabled: true, runs: 200 },
-    },
+    compilers: [{ version: '0.8.20', settings: { optimizer: { enabled: true, runs: 200 } } }],
+  },
+  tronSolc: {
+    enable: true,
+    filter: [],
+    compilers: [{ version: '0.8.20' }],
   },
   networks: {
     shasta: {
-      url: 'https://api.shasta.trongrid.io',
+      url: 'https://api.shasta.trongrid.io/jsonrpc',
       accounts: [PRIVATE_KEY],
-      chainId: 1, // Tron mainnet & shasta share chainId in TronBox context
+      chainId: 2494104990,
+      httpHeaders: { 'TRON-PRO-API-KEY': TRON_PRO_API_KEY },
+      tron: true,
     },
     nile: {
-      url: 'https://nile.trongrid.io',
+      url: 'https://nile.trongrid.io/jsonrpc',
       accounts: [PRIVATE_KEY],
-      chainId: 1,
+      chainId: 3448148188,
+      httpHeaders: { 'TRON-PRO-API-KEY': TRON_PRO_API_KEY },
+      tron: true,
     },
     tron: {
-      url: process.env.TRON_MAINNET_RPC || 'https://api.trongrid.io',
+      url: process.env.TRON_MAINNET_RPC || 'https://api.trongrid.io/jsonrpc',
       accounts: [PRIVATE_KEY],
-      chainId: 728126428, // TRON mainnet chainId
-      gasPrice: 420_000_000, // 420 SUN (~0.42 TRX)
+      chainId: 728126428,
+      gasPrice: 420_000_000,
+      httpHeaders: { 'TRON-PRO-API-KEY': TRON_PRO_API_KEY },
+      tron: true,
     },
   },
   etherscan: {

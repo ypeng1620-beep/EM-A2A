@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-contracts-sol",
+  "name": "@poisonpyf/a2a-contracts-sol",
   "version": "0.1.0",
   "private": true,
   "description": "EM-A2A Solidity smart contracts",
@@ -9,13 +9,19 @@
     "clean": "rm -rf artifacts cache typechain-types",
     "node": "hardhat node",
     "deploy:shasta": "hardhat run script/deploy.ts --network shasta",
+    "deploy:tronweb:shasta": "tsx script/deploy-tronweb.ts shasta",
+    "deploy:tronweb:mainnet": "tsx script/deploy-tronweb.ts mainnet",
     "deploy:mainnet": "hardhat run script/deploy.mainnet.ts --network tron",
     "verify:shasta": "hardhat run script/verify.ts --network shasta",
     "verify:mainnet": "hardhat run script/verify.ts --network tron"
   },
   "devDependencies": {
+    "@layerzerolabs/hardhat-deploy": "0.11.45-lz.4",
+    "@layerzerolabs/hardhat-tron": "^3.0.168",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.0.0",
-    "hardhat": "^2.22.0"
+    "hardhat": "^2.22.0",
+    "solc": "0.8.20",
+    "tronbox": "^4.7.0"
   }
 }

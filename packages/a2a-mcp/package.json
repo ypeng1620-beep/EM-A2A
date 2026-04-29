@@ -1,12 +1,12 @@
 {
-  "name": "@em/a2a-mcp",
-  "version": "0.1.0",
+  "name": "@poisonpyf/a2a-mcp",
+  "version": "0.1.2",
   "description": "EM-A2A MCP Server — Agent-to-Agent payments, escrow, credit, and identity tools for AI agents",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "a2a-mcp": "./dist/index.js"
+    "a2a-mcp": "a2a-mcp.js"
   },
   "exports": {
     ".": {
@@ -34,11 +34,11 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@em/a2a-core": "workspace:*",
-    "@em/a2a-pay": "workspace:*",
-    "@em/a2a-credit": "workspace:*",
-    "@em/a2a-id": "workspace:*",
-    "@em/a2a-compliance": "workspace:*",
+    "@poisonpyf/a2a-core": "workspace:*",
+    "@poisonpyf/a2a-pay": "workspace:*",
+    "@poisonpyf/a2a-credit": "workspace:*",
+    "@poisonpyf/a2a-id": "workspace:*",
+    "@poisonpyf/a2a-compliance": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "zod": "^4.0.0"
   },

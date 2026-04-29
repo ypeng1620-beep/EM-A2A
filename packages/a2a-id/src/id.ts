@@ -18,9 +18,9 @@ import {
   type AgentIdentity,
   type SBTCredential,
   type QualificationType,
-} from '@em/a2a-core'
-import { KYAEngine } from '@em/a2a-compliance'
-import type { KYAStatus } from '@em/a2a-compliance'
+} from '@poisonpyf/a2a-core'
+import { KYAEngine } from '@poisonpyf/a2a-compliance'
+import type { KYAStatus } from '@poisonpyf/a2a-compliance'
 
 export interface A2AIDConfig {
   productId: string
@@ -57,7 +57,7 @@ export class A2AID {
 
   constructor(config: A2AIDConfig) {
     this.config = config
-    this.chain = ChainFactory.getAdapter('tron:mainnet')
+    this.chain = ChainFactory.getAdapter()
     this.kya = new KYAEngine()
   }
 

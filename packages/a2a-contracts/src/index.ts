@@ -1,5 +1,5 @@
 /**
- * @em/a2a-contracts — Smart Contract ABIs & Types
+ * @poisonpyf/a2a-contracts — Smart Contract ABIs & Types
  *
  * 提供 4 个核心合约的 ABI、地址管理和类型定义。
  *

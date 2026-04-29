@@ -20,9 +20,9 @@ import type {
   Review,
   ServiceType,
   IChainAdapter,
-} from '@em/a2a-core'
-import { ChainFactory, RevenueEngine } from '@em/a2a-core'
-import { AuditTrail } from '@em/a2a-compliance'
+} from '@poisonpyf/a2a-core'
+import { ChainFactory, RevenueEngine } from '@poisonpyf/a2a-core'
+import { AuditTrail } from '@poisonpyf/a2a-compliance'
 
 export interface A2AMarketConfig {
   productId: string
@@ -40,7 +40,7 @@ export class A2AMarket {
   constructor(config: A2AMarketConfig) {
     this.config = config
     this.db = new Database(config.dbPath)
-    this.chain = ChainFactory.getAdapter('tron:mainnet')
+    this.chain = ChainFactory.getAdapter()
     this.revenue = new RevenueEngine({ mode: 'fixed_tier' })
     this.audit = new AuditTrail()
     this.initDB()

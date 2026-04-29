@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-lend",
+  "name": "@poisonpyf/a2a-lend",
   "version": "0.1.0",
   "description": "A2A Lend — Agent collateralized lending based on credit score",
   "type": "module",
@@ -11,8 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@em/a2a-core": "workspace:*",
-    "@em/a2a-credit": "workspace:*"
+    "@poisonpyf/a2a-core": "workspace:*",
+    "@poisonpyf/a2a-credit": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

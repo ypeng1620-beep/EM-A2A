@@ -273,7 +273,7 @@ async function cmdHealth() {
   const results: string[][] = [['Package', 'Build', 'Tests', 'Status']]
 
   for (const name of pkgNames) {
-    results.push([`@em/${name}`, '✓', '✓', 'healthy'])
+    results.push([`@poisonpyf/${name}`, '✓', '✓', 'healthy'])
   }
 
   results.push(['contracts (4 .sol)', '✓', '✓', 'healthy'])

@@ -3,7 +3,7 @@
  * 交易模式分析 + 风险评分
  */
 
-import type { AgentDID } from '@em/a2a-core'
+import type { AgentDID } from '@poisonpyf/a2a-core'
 import type { ComplianceResult } from './types.js'
 
 export interface AMLResult {

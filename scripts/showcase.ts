@@ -8,8 +8,8 @@
  */
 
 import { randomUUID } from 'crypto'
-import { RevenueEngine, generateDID, parseDID } from '@em/a2a-core'
-import { A2ACredit } from '@em/a2a-credit'
+import { RevenueEngine, generateDID, parseDID } from '@poisonpyf/a2a-core'
+import { A2ACredit } from '@poisonpyf/a2a-credit'
 
 // ---------------------------------------------------------------------------
 // MCP tool handlers (imported so CI also validates them)
@@ -230,7 +230,7 @@ async function main() {
     ⚡ Revenue Engine (Fixed Tier + Variable Float)
     ⚡ Compliance (AML + KYA + Audit Trail)
 
-    MCP Plugin: npx @em/a2a-mcp
+    MCP Plugin: npx @poisonpyf/a2a-mcp
     GitHub:     github.com/ypeng1620-beep/EM-A2A
     TRON:       shasta testnet (mainnet ready)
 

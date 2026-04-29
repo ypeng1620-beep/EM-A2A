@@ -1,4 +1,4 @@
-import type { AgentDID, TxReceipt, RevenueMode } from '@em/a2a-core'
+import type { AgentDID, TxReceipt, RevenueMode } from '@poisonpyf/a2a-core'
 
 export interface A2APayConfig {
   productId: string

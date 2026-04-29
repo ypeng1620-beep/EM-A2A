@@ -2,6 +2,11 @@
   "name": "em-a2a",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "undici": "^7.0.0"
+    }
+  },
   "description": "EM-A2A: AI Agent Economy — Alipay-on-chain for Agent-to-Agent commerce",
   "scripts": {
     "build": "pnpm -r run build",
@@ -39,8 +44,12 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,sol}": [
+    "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "tronweb": "^6.3.0",
+    "undici": "^8.1.0"
   }
 }

@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
-import { RevenueEngine } from '@em/a2a-core'
-import type { RevenueMode } from '@em/a2a-core'
+import { RevenueEngine } from '@poisonpyf/a2a-core'
+import type { RevenueMode } from '@poisonpyf/a2a-core'
 
 export const revenueSchema = z.object({
   amount: z.string().describe('Transaction amount. "100000000" = 100 USDC'),

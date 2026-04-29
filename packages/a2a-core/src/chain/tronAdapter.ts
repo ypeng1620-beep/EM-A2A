@@ -64,6 +64,21 @@ export class TronAdapter implements IChainAdapter {
   // Payment
   // =========================================================================
 
+  private getTokenAddress(token: 'USDT' | 'USDC'): string {
+    const [, network] = this.chainId.split(':')
+    const isTestnet = network === 'shasta' || network === 'nile'
+    if (isTestnet) {
+      // Shasta testnet TRC-20 token addresses (verified on-chain 2026-04-28)
+      return token === 'USDT'
+        ? process.env.SHASTA_USDT_ADDRESS || 'TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs'
+        : process.env.SHASTA_USDC_ADDRESS || 'TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs' // fallback to USDT for Shasta
+    }
+    // TRON mainnet official TRC-20 contracts
+    return token === 'USDT'
+      ? process.env.MAINNET_USDT_ADDRESS || 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+      : process.env.MAINNET_USDC_ADDRESS || 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
+  }
+
   async transferStablecoin(
     to: string,
     token: 'USDT' | 'USDC',
@@ -72,8 +87,7 @@ export class TronAdapter implements IChainAdapter {
   ): Promise<TxReceipt> {
     this.ensureConnected()
 
-    const contractAddress =
-      token === 'USDT' ? 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' : 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
+    const contractAddress = this.getTokenAddress(token)
 
     return this.withRetry(async () => {
       const tx = await this.tronWeb.transactionBuilder.triggerSmartContract(
@@ -84,7 +98,7 @@ export class TronAdapter implements IChainAdapter {
           { type: 'address', value: to },
           { type: 'uint256', value: amount },
         ],
-        this.tronWeb.address.toHex(this.config.privateKey),
+        this.tronWeb.address.toHex(this.tronWeb.defaultAddress.base58),
       )
 
       const signedTx = await this.tronWeb.trx.sign(tx.transaction)
@@ -132,10 +146,7 @@ export class TronAdapter implements IChainAdapter {
     this.ensureConnected()
 
     if (token) {
-      const contractAddress =
-        token === 'USDT'
-          ? 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
-          : 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
+      const contractAddress = this.getTokenAddress(token)
       const contract = await this.tronWeb.contract().at(contractAddress)
       const balance = await contract.balanceOf(address).call()
       return balance.toString()

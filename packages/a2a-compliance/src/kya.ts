@@ -3,7 +3,7 @@
  * Agent 身份验证、风险评级、验证状态管理
  */
 
-import type { AgentDID, AgentIdentity, SBTCredential } from '@em/a2a-core'
+import type { AgentDID, AgentIdentity, SBTCredential } from '@poisonpyf/a2a-core'
 import type { ComplianceResult, RiskLevel } from './types.js'
 
 export type KYAStatus = 'unverified' | 'pending' | 'verified' | 'rejected' | 'expired'

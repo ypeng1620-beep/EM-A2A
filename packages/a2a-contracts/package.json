@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-contracts",
+  "name": "@poisonpyf/a2a-contracts",
   "version": "0.1.0",
   "description": "EM-A2A Solidity smart contract ABIs & types: RevenueSplitter, Escrow, AgentRegistry, MicroPayment",
   "type": "module",
@@ -19,7 +19,7 @@
     "clean": "rm -rf dist && rm -rf ../../contracts/artifacts ../../contracts/cache ../../contracts/typechain-types"
   },
   "dependencies": {
-    "@em/a2a-core": "workspace:*"
+    "@poisonpyf/a2a-core": "workspace:*"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^5.0.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-invoice",
+  "name": "@poisonpyf/a2a-invoice",
   "version": "0.1.0",
   "description": "A2A Invoice — Auto settlement & tax reporting for Agent-to-Agent commerce",
   "type": "module",
@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@em/a2a-core": "workspace:*"
+    "@poisonpyf/a2a-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

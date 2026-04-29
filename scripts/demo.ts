@@ -30,9 +30,9 @@ import {
   parseDID,
   createPaymentRequest,
   validatePaymentRequest,
-} from '@em/a2a-core'
+} from '@poisonpyf/a2a-core'
 
-import { A2ACredit } from '@em/a2a-credit'
+import { A2ACredit } from '@poisonpyf/a2a-credit'
 
 // ---------------------------------------------------------------------------
 // Helpers

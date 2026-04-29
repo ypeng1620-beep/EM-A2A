@@ -19,7 +19,7 @@ import {
   type CreditRecord,
   type CreditLevel,
   type CreditFactors,
-} from '@em/a2a-core'
+} from '@poisonpyf/a2a-core'
 
 export interface BehaviorRecord {
   id: string

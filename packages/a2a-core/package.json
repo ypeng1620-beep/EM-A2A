@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-core",
+  "name": "@poisonpyf/a2a-core",
   "version": "0.1.0",
   "description": "EM-A2A shared core: types, chain abstraction, x402 protocol, 8004 identity",
   "type": "module",

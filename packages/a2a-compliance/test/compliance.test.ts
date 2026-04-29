@@ -3,7 +3,7 @@ import { KYAEngine } from '../src/kya.js'
 import { AMLScanner } from '../src/aml.js'
 import { AuditTrail } from '../src/auditTrail.js'
 import { TaxReporter } from '../src/taxReporter.js'
-import type { AgentIdentity } from '@em/a2a-core'
+import type { AgentIdentity } from '@poisonpyf/a2a-core'
 
 function makeIdentity(did: string): AgentIdentity {
   return {

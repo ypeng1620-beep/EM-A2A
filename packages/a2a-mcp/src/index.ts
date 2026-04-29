@@ -3,7 +3,7 @@
  * EM-A2A MCP Server — Entry Point
  *
  * 启动方式:
- *   npx @em/a2a-mcp
+ *   npx @poisonpyf/a2a-mcp
  *   或作为 MCP stdio transport:
  *   node dist/index.js
  *
@@ -12,7 +12,7 @@
  *     "mcpServers": {
  *       "a2a": {
  *         "command": "npx",
- *         "args": ["@em/a2a-mcp"]
+ *         "args": ["@poisonpyf/a2a-mcp"]
  *       }
  *     }
  *   }
@@ -28,8 +28,8 @@ async function main() {
   // Tool count
   const tools = ['a2a_pay', 'a2a_escrow', 'a2a_revenue', 'a2a_credit']
 
-  console.error(`⚡ EM-A2A MCP Server v0.1.0`)
-  console.error(`   Network: ${process.env.A2A_NETWORK || 'shasta'}`)
+  console.error(`⚡ EM-A2A MCP Server v${process.env.npm_package_version || '0.1.2'}`)
+  console.error(`   Network: ${process.env.A2A_NETWORK || 'mainnet'}`)
   console.error(`   Tools: ${tools.join(', ')}`)
 
   await server.connect(transport)

@@ -4,7 +4,7 @@
  */
 
 import { randomUUID } from 'crypto'
-import type { AgentDID } from '@em/a2a-core'
+import type { AgentDID } from '@poisonpyf/a2a-core'
 import type { AuditEntry, AuditReport } from './types.js'
 
 export class AuditTrail {

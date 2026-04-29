@@ -259,10 +259,10 @@ vi.mock('better-sqlite3', () => ({
 }))
 
 // ---------------------------------------------------------------------------
-// Mock: @em/a2a-core
+// Mock: @poisonpyf/a2a-core
 // ---------------------------------------------------------------------------
 
-vi.mock('@em/a2a-core', () => ({
+vi.mock('@poisonpyf/a2a-core', () => ({
   ChainFactory: {
     getAdapter: vi.fn(() => ({
       connect: vi.fn().mockResolvedValue(undefined),
@@ -299,10 +299,10 @@ vi.mock('@em/a2a-core', () => ({
 }))
 
 // ---------------------------------------------------------------------------
-// Mock: @em/a2a-compliance
+// Mock: @poisonpyf/a2a-compliance
 // ---------------------------------------------------------------------------
 
-vi.mock('@em/a2a-compliance', () => ({
+vi.mock('@poisonpyf/a2a-compliance', () => ({
   AuditTrail: vi.fn().mockImplementation(() => ({
     record: vi.fn(),
     query: vi.fn().mockReturnValue([]),

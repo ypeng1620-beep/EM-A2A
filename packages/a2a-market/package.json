@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-market",
+  "name": "@poisonpyf/a2a-market",
   "version": "0.1.0",
   "description": "A2A Market — Agent service marketplace: listing, discovery, escrow, reviews",
   "type": "module",
@@ -11,10 +11,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@em/a2a-compliance": "workspace:*",
-    "@em/a2a-core": "workspace:*",
-    "@em/a2a-id": "workspace:*",
-    "@em/a2a-credit": "workspace:*",
+    "@poisonpyf/a2a-compliance": "workspace:*",
+    "@poisonpyf/a2a-core": "workspace:*",
+    "@poisonpyf/a2a-id": "workspace:*",
+    "@poisonpyf/a2a-credit": "workspace:*",
     "better-sqlite3": "^11.10.0",
     "zod": "^4.3.0"
   },

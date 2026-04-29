@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-earn",
+  "name": "@poisonpyf/a2a-earn",
   "version": "0.1.0",
   "description": "A2A Earn — Agent yield/treasury management",
   "type": "module",
@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@em/a2a-core": "workspace:*"
+    "@poisonpyf/a2a-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

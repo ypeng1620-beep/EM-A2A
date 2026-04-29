@@ -5,11 +5,11 @@
  * 生产环境可替换为 SQLite 或 TRON 链上状态。
  */
 
-import { A2APay, type A2APayConfig } from '@em/a2a-pay'
-import { A2ACredit } from '@em/a2a-credit'
-import { A2AID, type A2AIDConfig } from '@em/a2a-id'
-import { RevenueEngine, generateDID, parseDID } from '@em/a2a-core'
-import type { RevenueMode, RevenueResult } from '@em/a2a-core'
+import { A2APay, type A2APayConfig } from '@poisonpyf/a2a-pay'
+import { A2ACredit } from '@poisonpyf/a2a-credit'
+import { A2AID, type A2AIDConfig } from '@poisonpyf/a2a-id'
+import { RevenueEngine, generateDID, parseDID } from '@poisonpyf/a2a-core'
+import type { RevenueMode, RevenueResult } from '@poisonpyf/a2a-core'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,7 +46,7 @@ export interface AppState {
 // ---------------------------------------------------------------------------
 
 let state: AppState = {
-  network: process.env.A2A_NETWORK || 'shasta',
+  network: process.env.A2A_NETWORK || 'mainnet',
   agents: new Map(),
   escrows: new Map(),
 }
@@ -57,7 +57,7 @@ export function getState(): AppState {
 
 export function resetState(): void {
   state = {
-    network: process.env.A2A_NETWORK || 'shasta',
+    network: process.env.A2A_NETWORK || 'mainnet',
     agents: new Map(),
     escrows: new Map(),
   }

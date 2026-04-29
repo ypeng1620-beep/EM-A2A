@@ -1,5 +1,5 @@
 {
-  "name": "@em/a2a-insure",
+  "name": "@poisonpyf/a2a-insure",
   "version": "0.1.0",
   "description": "A2A Insure — Agent behavior insurance + service fulfillment bond",
   "type": "module",
@@ -11,8 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@em/a2a-core": "workspace:*",
-    "@em/a2a-credit": "workspace:*"
+    "@poisonpyf/a2a-core": "workspace:*",
+    "@poisonpyf/a2a-credit": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.0",
